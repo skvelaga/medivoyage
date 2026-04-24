@@ -167,9 +167,27 @@
   .hero-card-top .save { color: var(--terracotta); font-weight: 500; font-size: 14px; margin-top: 4px; }
 
   .hero-card-bottom { align-self: flex-end; max-width: 320px; }
-  .hero-quote { font-family: 'Fraunces', serif; font-style: italic; font-size: 17px; color: var(--forest); line-height: 1.35; }
-  .hero-quote-by { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 13px; color: var(--muted); }
-  .hero-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #C89A6E, #A5543A); display: inline-flex; align-items: center; justify-content: center; color: var(--cream); font-weight: 600; font-size: 13px; }
+  .hero-included-title {
+    font-family: 'Fraunces', serif; font-size: 15px; color: var(--forest);
+    font-weight: 500; letter-spacing: 0.02em; margin-bottom: 12px;
+  }
+  .hero-included { list-style: none; padding: 0; margin: 0; }
+  .hero-included li {
+    position: relative; padding: 6px 0 6px 22px;
+    font-size: 14px; color: var(--forest); line-height: 1.45;
+    border-bottom: 1px solid rgba(27, 59, 54, 0.06);
+  }
+  .hero-included li:last-child { border-bottom: none; }
+  .hero-included li::before {
+    content: ""; position: absolute; left: 0; top: 12px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--brass); opacity: 0.85;
+    background-image: linear-gradient(135deg, var(--brass) 0%, var(--terracotta) 100%);
+  }
+  .hero-included li::after {
+    content: "✓"; position: absolute; left: 3px; top: 7px;
+    font-size: 10px; color: var(--cream); font-weight: 700; line-height: 1;
+  }
 
   .hero-compass {
     position: absolute; top: 50%; left: 50%;
@@ -383,11 +401,13 @@
           <div class="save">You save $15,500</div>
         </div>
         <div class="hero-card hero-card-bottom">
-          <div class="hero-quote">"The concierge handled everything — I just showed up and smiled."</div>
-          <div class="hero-quote-by">
-            <span class="hero-avatar">M</span>
-            <span>Maria R. · Austin, TX · Verified member</span>
-          </div>
+          <div class="hero-included-title">Every booking includes</div>
+          <ul class="hero-included">
+            <li>AI x-ray review + clinic match</li>
+            <li>Flights, hotel, ground transport</li>
+            <li>On-site translation at every visit</li>
+            <li>90 days of post-op voice check-ins</li>
+          </ul>
         </div>
       </div>
     </div>
