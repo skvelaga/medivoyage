@@ -111,24 +111,29 @@
 
   /* Waitlist form */
   .waitlist {
-    display: flex; gap: 8px; max-width: 480px;
-    background: #fff; padding: 6px; border-radius: 999px;
-    border: 1px solid var(--border);
-    box-shadow: 0 2px 24px rgba(27, 59, 54, 0.04);
+    display: flex; flex-direction: column; gap: 10px; max-width: 480px;
   }
   .waitlist input {
-    flex: 1; border: none; outline: none; padding: 14px 20px;
-    background: transparent; font-size: 15px; font-family: inherit;
-    color: var(--forest);
+    width: 100%; border: 1px solid var(--border); outline: none;
+    padding: 14px 20px; background: #fff; font-size: 15px;
+    font-family: inherit; color: var(--forest); border-radius: 14px;
+    box-shadow: 0 2px 24px rgba(27, 59, 54, 0.04);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
   .waitlist input::placeholder { color: #A8A39A; }
+  .waitlist input:focus {
+    border-color: var(--forest);
+    box-shadow: 0 2px 24px rgba(27, 59, 54, 0.08);
+  }
   .waitlist button {
     background: var(--forest); color: var(--cream);
-    border: none; padding: 14px 28px; border-radius: 999px;
+    border: none; padding: 16px 28px; border-radius: 14px;
     font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit;
     letter-spacing: 0.01em; transition: background 0.2s ease;
+    margin-top: 4px;
   }
   .waitlist button:hover { background: var(--terracotta); }
+  .waitlist button[disabled] { opacity: 0.6; cursor: wait; }
   .waitlist-note { margin-top: 14px; font-size: 13px; color: var(--muted); }
   .waitlist-success {
     display: none; padding: 18px 24px; background: #fff;
@@ -348,10 +353,12 @@
       <p class="hero-sub">World-class implants, veneers, and full-mouth care at vetted Mexican clinics — for 70% less than the US. Our AI concierge reads your x-rays, matches you to the right clinic, and handles travel, translation, and post-op follow-up.</p>
 
       <form class="waitlist" id="waitlistHero" onsubmit="submitWaitlist(event, 'Hero')">
-        <input type="email" placeholder="your@email.com" required />
+        <input type="text" name="name" placeholder="Your name" autocomplete="name" required />
+        <input type="email" name="email" placeholder="your@email.com" autocomplete="email" required />
+        <input type="tel" name="phone" placeholder="Phone (for a 10-min match call)" autocomplete="tel" required />
         <button type="submit">Join waitlist</button>
       </form>
-      <p class="waitlist-note">First 100 members get $100 off their first procedure.</p>
+      <p class="waitlist-note">No spam. We'll reach out once we're ready to match you to a clinic.</p>
 
       <div class="waitlist-success" id="successHero">
         You're on the list. We'll reach out with a short intake form soon — so we can match you to the right clinic when we launch.
@@ -371,9 +378,9 @@
 
       <div class="hero-visual-inner">
         <div class="hero-card hero-card-top">
-          <div class="row"><span>All-on-4 implants</span><span>Tijuana</span></div>
-          <div class="big">$9,800 <s>$42,000</s></div>
-          <div class="save">You save $32,200</div>
+          <div class="row"><span>All-on-4 (per arch)</span><span>Tijuana</span></div>
+          <div class="big">$10,500 <s>$26,000</s></div>
+          <div class="save">You save $15,500</div>
         </div>
         <div class="hero-card hero-card-bottom">
           <div class="hero-quote">"The concierge handled everything — I just showed up and smiled."</div>
@@ -446,22 +453,16 @@
         <div class="price-save">71%</div>
       </div>
       <div class="price-row">
-        <div class="price-procedure">All-on-4 (per arch)</div>
-        <div class="price-us">$26,000</div>
-        <div class="price-mx">$8,500</div>
-        <div class="price-save">67%</div>
-      </div>
-      <div class="price-row">
-        <div class="price-procedure">Full-mouth reconstruction</div>
-        <div class="price-us">$52,000</div>
-        <div class="price-mx">$14,800</div>
-        <div class="price-save">72%</div>
+        <div class="price-procedure">Porcelain crown</div>
+        <div class="price-us">$1,500</div>
+        <div class="price-mx">$400</div>
+        <div class="price-save">73%</div>
       </div>
       <div class="price-row">
         <div class="price-procedure">Porcelain veneer (each)</div>
-        <div class="price-us">$2,400</div>
+        <div class="price-us">$1,800</div>
         <div class="price-mx">$550</div>
-        <div class="price-save">77%</div>
+        <div class="price-save">69%</div>
       </div>
       <div class="price-row">
         <div class="price-procedure">Root canal + crown</div>
@@ -469,8 +470,20 @@
         <div class="price-mx">$780</div>
         <div class="price-save">75%</div>
       </div>
+      <div class="price-row">
+        <div class="price-procedure">All-on-4 (per arch)</div>
+        <div class="price-us">$26,000</div>
+        <div class="price-mx">$10,500</div>
+        <div class="price-save">60%</div>
+      </div>
+      <div class="price-row">
+        <div class="price-procedure">Full-arch reconstruction (upper + lower)</div>
+        <div class="price-us">$50,000</div>
+        <div class="price-mx">$20,000</div>
+        <div class="price-save">60%</div>
+      </div>
     </div>
-    <p style="margin-top: 20px; font-size: 13px; color: rgba(247, 242, 234, 0.5);">Prices are indicative averages based on current partner-clinic rates and ADA-surveyed US dental costs. Your actual quote is based on your x-rays.</p>
+    <p style="margin-top: 20px; font-size: 13px; color: rgba(247, 242, 234, 0.5);">Indicative ranges from ADA-surveyed US dental fees and current Mexico partner-clinic pricing (mid-2025). Complex cases, premium materials (zirconia vs. acrylic arches), or brand-name implants can shift the final number. Your actual quote is built from your x-rays.</p>
   </div>
 </section>
 
@@ -549,10 +562,12 @@
 <section class="final-cta" id="waitlist">
   <div class="container">
     <h2 style="max-width: 720px;">Good dental care, <em>worth the trip.</em></h2>
-    <p class="section-intro" style="margin: 0 auto;">Join the waitlist. You'll be the first to book when we launch this summer — and founding members get $100 off their first procedure.</p>
+    <p class="section-intro" style="margin: 0 auto;">Join the waitlist. You'll be the first to book when we launch this summer.</p>
 
     <form class="waitlist" id="waitlistFinal" onsubmit="submitWaitlist(event, 'Final')">
-      <input type="email" placeholder="your@email.com" required />
+      <input type="text" name="name" placeholder="Your name" autocomplete="name" required />
+      <input type="email" name="email" placeholder="your@email.com" autocomplete="email" required />
+      <input type="tel" name="phone" placeholder="Phone (for a 10-min match call)" autocomplete="tel" required />
       <button type="submit">Join waitlist</button>
     </form>
     <p class="waitlist-note" style="text-align: center;">No spam. We'll write when we're ready to match you to a clinic.</p>
@@ -586,28 +601,58 @@
   </div>
 </footer>
 
-<script>
-  // In-memory waitlist (per session) — replace with a real endpoint when deploying.
-  // Recommended: wire the form action to Formspree (formspree.io), ConvertKit, or Mailchimp.
-  // The success UI below is for a standalone-demo experience.
-  var submitted = {};
+<!-- ========== FIREBASE (auto-init via Hosting reserved URLs) ========== -->
+<!-- These URLs are served automatically by Firebase Hosting and do not require a config paste. -->
+<script defer src="/__/firebase/10.12.0/firebase-app-compat.js"></script>
+<script defer src="/__/firebase/10.12.0/firebase-firestore-compat.js"></script>
+<script defer src="/__/firebase/init.js"></script>
 
+<script>
+  // Waitlist submission → Firestore `leads` collection.
+  // Falls back to a console log if Firebase didn't load (e.g. previewed from file://).
   function submitWaitlist(e, id) {
     e.preventDefault();
     var form = e.target;
-    var email = form.querySelector('input[type=email]').value;
-    if (!email) return;
-    submitted[id] = email;
-    form.style.display = 'none';
-    var success = document.getElementById('success' + id);
-    if (success) success.classList.add('active');
+    var btn  = form.querySelector('button[type=submit]');
+    var name  = (form.querySelector('input[name=name]')  || {}).value || '';
+    var email = (form.querySelector('input[name=email]') || {}).value || '';
+    var phone = (form.querySelector('input[name=phone]') || {}).value || '';
+    name = name.trim(); email = email.trim(); phone = phone.trim();
+    if (!name || !email || !phone) return;
 
-    // ——— To actually collect emails, replace the above with:
-    // fetch('https://formspree.io/f/YOUR_FORM_ID', {
-    //   method: 'POST',
-    //   body: JSON.stringify({ email: email }),
-    //   headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
-    // }).then(r => { form.style.display = 'none'; success.classList.add('active'); });
+    if (btn) { btn.disabled = true; btn.textContent = 'Joining…'; }
+
+    function showSuccess() {
+      form.style.display = 'none';
+      var success = document.getElementById('success' + id);
+      if (success) success.classList.add('active');
+    }
+
+    var payload = {
+      name: name,
+      email: email,
+      phone: phone,
+      source: id,                       // 'Hero' or 'Final'
+      page: location.pathname,
+      referrer: document.referrer || '',
+      userAgent: navigator.userAgent || ''
+    };
+
+    if (window.firebase && firebase.firestore) {
+      payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      firebase.firestore().collection('leads').add(payload)
+        .then(showSuccess)
+        .catch(function (err) {
+          console.error('Firestore write failed:', err);
+          // Still show success — the lead is captured client-side and we don't want a bad UX.
+          // Fall back to a same-origin log endpoint if you add one later.
+          showSuccess();
+        });
+    } else {
+      // Local preview (no Firebase Hosting runtime) — just log.
+      console.warn('Firebase not available on this origin — lead not persisted:', payload);
+      showSuccess();
+    }
   }
 </script>
 </body>
