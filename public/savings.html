@@ -71,13 +71,16 @@
     <div>
       <p class="text-xs uppercase tracking-widest text-terracotta font-medium mb-4">Savings calculator</p>
       <h1 class="text-4xl md:text-5xl text-forest leading-tight mb-5 font-medium">
-        See what you'd <span class="italic font-normal text-terracotta">actually save</span>.
+        Get a <span class="italic font-normal text-terracotta">ballpark estimate</span>.
       </h1>
-      <p class="text-lg text-muted leading-relaxed max-w-xl">
-        Pick your procedures. We'll show the average US cost vs. our verified partner-clinic
-        pricing in Mexico. Numbers below come from 2024–2026 industry surveys and our
-        partner-clinic rate cards.
+      <p class="text-lg text-muted leading-relaxed max-w-xl mb-4">
+        Pick your procedures to see an approximate US-vs-Mexico cost comparison.
+        Numbers come from 2024–2026 industry surveys and our partner-clinic rate cards.
       </p>
+      <div class="inline-flex items-start gap-2 px-4 py-2 rounded-lg bg-terra-light/30 border border-terracotta/30 text-sm text-terra-deep max-w-xl">
+        <span class="material-symbols-outlined text-base mt-0.5">info</span>
+        <span><strong>This is an estimate, not a quote.</strong> Your actual quote depends on your case and is provided after a partner dentist reviews your x-ray.</span>
+      </div>
     </div>
     <div class="relative">
       <div class="absolute -top-12 -left-12 w-64 h-64 bg-terracotta/15 rounded-full blur-3xl"></div>
@@ -95,13 +98,14 @@
     <!-- INPUT PANEL -->
     <div class="col-span-12 lg:col-span-5 flex flex-col gap-6">
       <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-border">
-        <h2 class="text-2xl font-medium text-forest mb-6 flex items-center gap-3">
+        <h2 class="text-2xl font-medium text-forest mb-2 flex items-center gap-3">
           <span class="material-symbols-outlined text-terracotta">edit_note</span>
-          Your treatment plan
+          Approximate treatment plan
         </h2>
+        <p class="text-sm text-muted mb-6">For a ballpark only — your real plan is built case-by-case from your x-ray.</p>
 
         <div class="space-y-3">
-          <p class="text-xs uppercase tracking-widest text-muted font-medium mb-2">Required procedures</p>
+          <p class="text-xs uppercase tracking-widest text-muted font-medium mb-2">Procedures (approximate)</p>
 
           <label class="proc-row flex items-center justify-between p-4 bg-cream-bright border-2 border-border rounded-xl cursor-pointer transition-all" data-id="implant" data-us="5250" data-mx="1750">
             <div class="flex items-center gap-3">
@@ -160,8 +164,9 @@
         </div>
 
         <p class="mt-6 text-xs text-muted leading-relaxed">
-          US averages from CareCredit and ADA fee surveys (2024–2025). Mexico pricing from
-          our Tijuana, Algodones, and Cancún partner clinic rate cards.
+          US averages from CareCredit and ADA fee surveys (2024–2025). Mexico pricing
+          from our partner-clinic rate cards. Actual prices vary by case complexity,
+          materials chosen, and clinic. Treat numbers below as a ballpark, not a quote.
         </p>
       </div>
 
@@ -183,13 +188,14 @@
     <div class="col-span-12 lg:col-span-7 space-y-6">
 
       <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-border">
-        <div class="flex justify-between items-center mb-8 flex-wrap gap-3">
-          <h2 class="text-2xl font-medium text-forest">Cost comparison</h2>
+        <div class="flex justify-between items-center mb-2 flex-wrap gap-3">
+          <h2 class="text-2xl font-medium text-forest">Approximate comparison</h2>
           <span id="reduction-pill" class="flex items-center gap-2 text-terra-deep bg-terra-light/40 px-3 py-1.5 rounded-full text-sm font-medium">
             <span class="material-symbols-outlined text-base">trending_down</span>
             <span id="reduction-pct">—</span>
           </span>
         </div>
+        <p class="text-xs text-muted mb-6">Estimate only. Actual quote varies by case and is provided after partner-clinic review.</p>
 
         <div class="grid grid-cols-2 gap-6 items-end mb-8" style="min-height: 240px;">
           <!-- US Bar -->
@@ -199,7 +205,7 @@
                 <span id="us-amt" class="font-serif text-2xl text-forest">$0</span>
               </div>
             </div>
-            <p class="mt-3 text-xs uppercase tracking-widest text-muted font-medium">United States avg</p>
+            <p class="mt-3 text-xs uppercase tracking-widest text-muted font-medium">US ballpark</p>
           </div>
 
           <!-- Mexico Bar -->
@@ -209,32 +215,33 @@
                 <span id="mx-amt" class="font-serif text-2xl text-cream">$0</span>
               </div>
             </div>
-            <p class="mt-3 text-xs uppercase tracking-widest text-terracotta font-medium">Medivoyage partner clinic</p>
+            <p class="mt-3 text-xs uppercase tracking-widest text-terracotta font-medium">Medivoyage ballpark</p>
           </div>
         </div>
 
         <!-- Savings summary -->
         <div class="border-t border-border pt-6 grid grid-cols-1 md:grid-cols-3 gap-3">
           <div class="p-4 rounded-xl bg-cream-bright text-center">
-            <p class="text-xs uppercase tracking-widest text-muted mb-1">Estimated savings</p>
+            <p class="text-xs uppercase tracking-widest text-muted mb-1">Approximate savings</p>
             <p class="font-serif text-2xl text-terracotta" id="savings-amt">$0</p>
           </div>
           <div class="p-4 rounded-xl bg-cream-bright text-center">
-            <p class="text-xs uppercase tracking-widest text-muted mb-1">Travel budget</p>
+            <p class="text-xs uppercase tracking-widest text-muted mb-1">Travel budget (typical)</p>
             <p class="font-serif text-2xl text-forest" id="travel-amt">$0</p>
           </div>
           <div class="p-4 rounded-xl bg-forest text-center">
-            <p class="text-xs uppercase tracking-widest text-cream/70 mb-1">Net in your pocket</p>
+            <p class="text-xs uppercase tracking-widest text-cream/70 mb-1">Approximate net</p>
             <p class="font-serif text-2xl text-terra-light" id="net-amt">$0</p>
           </div>
         </div>
+        <p class="mt-5 text-xs text-muted text-center">All figures are approximate. Final pricing is determined per case after partner-clinic review of your x-ray.</p>
       </div>
 
       <!-- CTA card -->
       <div id="cta" class="bg-cream-warm border border-border p-6 md:p-8 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
-          <h3 class="text-xl font-medium text-forest mb-1">Lock in this estimate</h3>
-          <p class="text-sm text-muted">Get a clinic-matched quote, plus a travel plan, within 24 hours.</p>
+          <h3 class="text-xl font-medium text-forest mb-1">Get a real quote</h3>
+          <p class="text-sm text-muted">A partner dentist reviews your x-ray and you get a clinic-matched quote within 24 hours. The estimate above is just a ballpark.</p>
         </div>
         <form onsubmit="submitWaitlist(event, 'Savings')" class="grid grid-cols-1 md:grid-cols-2 gap-2 w-full md:w-auto md:min-w-[420px]">
           <input name="name"  type="text"  required placeholder="Your name"
@@ -329,7 +336,9 @@
 
 <script>
   // ============ Calculator ============
-  function fmt(n){ return '$' + n.toLocaleString('en-US'); }
+  // Round to nearest $50 so outputs read as approximations, not binding numbers.
+  function roundApprox(n){ return Math.round(n / 50) * 50; }
+  function fmt(n){ return '~$' + roundApprox(n).toLocaleString('en-US'); }
 
   function recalc(){
     var rows = document.querySelectorAll('.proc-row');
@@ -352,14 +361,23 @@
     var savings = us - mx;
     var travel  = anySelected ? 850 : 0;  // round-trip flight + 4 nights, US-Mexico ballpark
     var net     = Math.max(0, savings - travel);
-    var pct     = us > 0 ? Math.round((savings / us) * 100) : 0;
+    var pct     = us > 0 ? Math.round((savings / us) * 100 / 5) * 5 : 0;  // round pct to nearest 5
 
-    document.getElementById('us-amt').textContent = fmt(us);
-    document.getElementById('mx-amt').textContent = fmt(mx);
-    document.getElementById('savings-amt').textContent = fmt(savings);
-    document.getElementById('travel-amt').textContent = fmt(travel);
-    document.getElementById('net-amt').textContent = fmt(net);
-    document.getElementById('reduction-pct').textContent = pct > 0 ? (pct + '% lower in Mexico') : 'Pick procedures to compare';
+    if (anySelected) {
+      document.getElementById('us-amt').textContent = fmt(us);
+      document.getElementById('mx-amt').textContent = fmt(mx);
+      document.getElementById('savings-amt').textContent = fmt(savings);
+      document.getElementById('travel-amt').textContent = fmt(travel);
+      document.getElementById('net-amt').textContent = fmt(net);
+      document.getElementById('reduction-pct').textContent = pct > 0 ? ('~' + pct + '% lower (typical)') : 'Pick procedures to compare';
+    } else {
+      document.getElementById('us-amt').textContent = '$0';
+      document.getElementById('mx-amt').textContent = '$0';
+      document.getElementById('savings-amt').textContent = '$0';
+      document.getElementById('travel-amt').textContent = '$0';
+      document.getElementById('net-amt').textContent = '$0';
+      document.getElementById('reduction-pct').textContent = 'Pick procedures to compare';
+    }
 
     // Bar heights — US always at 100% of itself, Mexico is mx/us proportion
     var usBar = document.getElementById('bar-us');
