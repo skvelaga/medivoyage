@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vetted clinics — Medivoyage Health</title>
+<meta name="description" content="Our launch partner clinics across Tijuana, Los Algodones, Cancún, and Puerto Vallarta. Each verified for credentials, equipment, and case volume." />
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="theme-color" content="#1B3B36" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          forest:"#1B3B36","forest-dark":"#132A26","forest-deep":"#032521",
+          cream:"#F7F2EA","cream-warm":"#EFEAE1","cream-bright":"#FDFAF3",
+          terracotta:"#C86B4A","terra-light":"#FFB59C","terra-deep":"#7A3013",
+          brass:"#B08A5B",charcoal:"#3A3A37",muted:"#6B6963",border:"#E4DCCC",
+        },
+        fontFamily: { serif:["Fraunces","Georgia","serif"], sans:["Inter","system-ui","sans-serif"] }
+      }
+    }
+  };
+</script>
+
+<style>
+  body { font-family: "Inter", system-ui, sans-serif; background: #F7F2EA; color: #3A3A37; }
+  h1,h2,h3,h4 { font-family: "Fraunces", Georgia, serif; color: #1B3B36; }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; vertical-align:middle; }
+  .clinic-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .clinic-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(27,59,54,0.08); }
+  .filter-chip.active { background: #1B3B36; color: #F7F2EA; }
+  .clinic-card.hidden { display: none; }
+  .success-msg { display:none; padding:14px 20px; background:#FDFAF3; border-radius:12px; border:1px solid #E4DCCC; color:#1B3B36; }
+  .success-msg.active { display:block; }
+</style>
+</head>
+<body class="bg-cream text-charcoal">
+
+<!-- HEADER -->
+<header class="bg-cream/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-border">
+  <div class="flex justify-between items-center h-20 px-6 md:px-8 max-w-7xl mx-auto">
+    <a href="/" class="font-serif text-2xl font-semibold text-forest tracking-tight">Medivoyage</a>
+    <nav class="hidden md:flex items-center gap-8">
+      <a href="/how-it-works" class="text-xs uppercase tracking-widest text-muted hover:text-forest transition-colors">How it works</a>
+      <a href="/savings" class="text-xs uppercase tracking-widest text-muted hover:text-forest transition-colors">Savings</a>
+      <a href="/clinics" class="text-xs uppercase tracking-widest text-forest font-semibold border-b-2 border-terracotta pb-1">Clinics</a>
+      <a href="/#waitlist" class="text-xs uppercase tracking-widest text-muted hover:text-forest transition-colors">Waitlist</a>
+    </nav>
+    <a href="#cta" class="px-5 py-2.5 rounded-lg bg-forest text-cream text-sm font-medium hover:bg-forest-dark transition-all">Join waitlist</a>
+  </div>
+</header>
+
+<main class="pt-32 pb-20">
+
+<!-- HERO -->
+<section class="max-w-7xl mx-auto px-6 md:px-8 mb-12">
+  <div class="max-w-3xl">
+    <p class="text-xs uppercase tracking-widest text-terracotta font-medium mb-4">Vetted partner clinics</p>
+    <h1 class="text-4xl md:text-5xl text-forest leading-tight mb-5 font-medium">
+      Ten clinics. Real names. <span class="italic font-normal text-terracotta">Real credentials.</span>
+    </h1>
+    <p class="text-lg text-muted leading-relaxed max-w-2xl">
+      Each partner was researched individually — credential verification, lead-dentist
+      track record, equipment standards, and case volume. We onboard slowly and refuse
+      generic listings.
+    </p>
+  </div>
+</section>
+
+<!-- FILTERS -->
+<section class="max-w-7xl mx-auto px-6 md:px-8 mb-8">
+  <div class="bg-white border border-border rounded-2xl p-5 md:p-6 flex flex-wrap items-center gap-3 md:gap-6">
+    <span class="text-xs uppercase tracking-widest text-muted font-medium">Filter by city</span>
+    <div class="flex flex-wrap gap-2">
+      <button class="filter-chip active px-4 py-2 rounded-full text-sm border border-border hover:border-forest transition-all" data-city="all">All cities</button>
+      <button class="filter-chip px-4 py-2 rounded-full text-sm border border-border hover:border-forest transition-all" data-city="tijuana">Tijuana</button>
+      <button class="filter-chip px-4 py-2 rounded-full text-sm border border-border hover:border-forest transition-all" data-city="algodones">Los Algodones</button>
+      <button class="filter-chip px-4 py-2 rounded-full text-sm border border-border hover:border-forest transition-all" data-city="cancun">Cancún</button>
+      <button class="filter-chip px-4 py-2 rounded-full text-sm border border-border hover:border-forest transition-all" data-city="vallarta">Puerto Vallarta</button>
+    </div>
+  </div>
+  <div class="flex justify-between items-center mt-5 px-1">
+    <p class="text-sm text-muted"><span id="visible-count" class="text-forest font-semibold">10</span> verified clinics</p>
+    <p class="text-xs uppercase tracking-widest text-muted hidden md:block">Sorted by credentialing depth</p>
+  </div>
+</section>
+
+<!-- CLINIC GRID -->
+<section class="max-w-7xl mx-auto px-6 md:px-8">
+  <div id="clinic-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <!-- 1. Trust Dental Care -->
+    <article class="clinic-card bg-white rounded-2xl overflow-hidden border border-border" data-city="tijuana">
+      <div class="h-56 overflow-hidden relative bg-forest">
+        <img class="w-full h-full object-cover" alt="Trust Dental Care interior" src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=800&q=80"/>
+        <div class="absolute top-4 left-4 bg-forest text-cream px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest">Tijuana, MX</div>
+        <div class="absolute top-4 right-4 bg-cream/95 px-3 py-1 rounded-full text-xs flex items-center gap-1 text-forest font-medium">
+          <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;color:#C86B4A">star</span> 4.9
+        </div>
+      </div>
+      <div class="p-6">
+        <h3 class="text-lg font-medium text-forest mb-1">Trust Dental Care</h3>
+        <p class="text-xs text-muted uppercase tracking-widest mb-3">Dr. Cirenia Aparicio Miranda</p>
+        <p class="text-sm text-muted leading-relaxed mb-4">AACD Participating Member since 2009 — rare in Mexico. Top score on the Western Regional Boards. 15 minutes from the San Ysidro crossing.</p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Cosmetic</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Implants</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Same-day return</span>
+        </div>
+        <div class="flex justify-between items-center pt-4 border-t border-border">
+          <div>
+            <p class="text-xs uppercase tracking-widest text-muted">Implant + crown from</p>
+            <p class="font-serif text-lg text-forest">$1,750</p>
+          </div>
+          <a href="#cta" class="px-4 py-2 border border-forest text-forest text-sm rounded-lg hover:bg-forest hover:text-cream transition-all">Get matched</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 2. Cancún Dental Specialists -->
+    <article class="clinic-card bg-white rounded-2xl overflow-hidden border border-border" data-city="cancun">
+      <div class="h-56 overflow-hidden relative bg-forest">
+        <img class="w-full h-full object-cover" alt="Cancún Dental Specialists" src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80"/>
+        <div class="absolute top-4 left-4 bg-forest text-cream px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest">Cancún, MX</div>
+        <div class="absolute top-4 right-4 bg-cream/95 px-3 py-1 rounded-full text-xs flex items-center gap-1 text-forest font-medium">
+          <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;color:#C86B4A">star</span> 4.9
+        </div>
+      </div>
+      <div class="p-6">
+        <h3 class="text-lg font-medium text-forest mb-1">Cancún Dental Specialists</h3>
+        <p class="text-xs text-muted uppercase tracking-widest mb-3">Dr. Irma Gavaldon</p>
+        <p class="text-sm text-muted leading-relaxed mb-4">Michigan dental license + University of Michigan Master's in Restorative Dentistry. Cross-border credibility US patients ask about first.</p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Restorative</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Crowns &amp; bridges</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">US-licensed</span>
+        </div>
+        <div class="flex justify-between items-center pt-4 border-t border-border">
+          <div>
+            <p class="text-xs uppercase tracking-widest text-muted">Crown from</p>
+            <p class="font-serif text-lg text-forest">$375</p>
+          </div>
+          <a href="#cta" class="px-4 py-2 border border-forest text-forest text-sm rounded-lg hover:bg-forest hover:text-cream transition-all">Get matched</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 3. Rubio Dental Group -->
+    <article class="clinic-card bg-white rounded-2xl overflow-hidden border border-border" data-city="algodones">
+      <div class="h-56 overflow-hidden relative bg-forest">
+        <img class="w-full h-full object-cover" alt="Rubio Dental Group" src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=800&q=80"/>
+        <div class="absolute top-4 left-4 bg-forest text-cream px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest">Los Algodones, MX</div>
+        <div class="absolute top-4 right-4 bg-cream/95 px-3 py-1 rounded-full text-xs flex items-center gap-1 text-forest font-medium">
+          <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;color:#C86B4A">star</span> 4.8
+        </div>
+      </div>
+      <div class="p-6">
+        <h3 class="text-lg font-medium text-forest mb-1">Rubio Dental Group</h3>
+        <p class="text-xs text-muted uppercase tracking-widest mb-3">Dr. Carlos Rubio · Dr. Ernesto Montoya (ICOI)</p>
+        <p class="text-sm text-muted leading-relaxed mb-4">Only clinic in Algodones using Straumann exclusively. A single-system practice — US patients respond fast to that consistency.</p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Implants</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Straumann</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Full-arch</span>
+        </div>
+        <div class="flex justify-between items-center pt-4 border-t border-border">
+          <div>
+            <p class="text-xs uppercase tracking-widest text-muted">Implant + crown from</p>
+            <p class="font-serif text-lg text-forest">$1,750</p>
+          </div>
+          <a href="#cta" class="px-4 py-2 border border-forest text-forest text-sm rounded-lg hover:bg-forest hover:text-cream transition-all">Get matched</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 4. Cancun Cosmetic Dentistry -->
+    <article class="clinic-card bg-white rounded-2xl overflow-hidden border border-border" data-city="cancun">
+      <div class="h-56 overflow-hidden relative bg-forest">
+        <img class="w-full h-full object-cover" alt="Cancun Cosmetic Dentistry" src="https://images.unsplash.com/photo-1629909615081-b1f78a7fe85b?w=800&q=80"/>
+        <div class="absolute top-4 left-4 bg-forest text-cream px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest">Cancún, MX</div>
+        <div class="absolute top-4 right-4 bg-cream/95 px-3 py-1 rounded-full text-xs flex items-center gap-1 text-forest font-medium">
+          <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;color:#C86B4A">star</span> 4.9
+        </div>
+      </div>
+      <div class="p-6">
+        <h3 class="text-lg font-medium text-forest mb-1">Cancun Cosmetic Dentistry</h3>
+        <p class="text-xs text-muted uppercase tracking-widest mb-3">Dr. Germán Arzate</p>
+        <p class="text-sm text-muted leading-relaxed mb-4">ABOI Diplomate plus Newsweek "Promotional Dentistry Leaders" feature. Rarest combination in Mexican implantology.</p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Implants</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Zygomatic</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Cosmetic</span>
+        </div>
+        <div class="flex justify-between items-center pt-4 border-t border-border">
+          <div>
+            <p class="text-xs uppercase tracking-widest text-muted">All-on-4 from</p>
+            <p class="font-serif text-lg text-forest">$10,000</p>
+          </div>
+          <a href="#cta" class="px-4 py-2 border border-forest text-forest text-sm rounded-lg hover:bg-forest hover:text-cream transition-all">Get matched</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 5. Sani Dental Group -->
+    <article class="clinic-card bg-white rounded-2xl overflow-hidden border border-border" data-city="algodones">
+      <div class="h-56 overflow-hidden relative bg-forest">
+        <img class="w-full h-full object-cover" alt="Sani Dental Group" src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=800&q=80"/>
+        <div class="absolute top-4 left-4 bg-forest text-cream px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest">Los Algodones, MX</div>
+        <div class="absolute top-4 right-4 bg-cream/95 px-3 py-1 rounded-full text-xs flex items-center gap-1 text-forest font-medium">
+          <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;color:#C86B4A">star</span> 4.8
+        </div>
+      </div>
+      <div class="p-6">
+        <h3 class="text-lg font-medium text-forest mb-1">Sani Dental Group</h3>
+        <p class="text-xs text-muted uppercase tracking-widest mb-3">Dr. Hermes Somonte (ZAGA Centers)</p>
+        <p class="text-sm text-muted leading-relaxed mb-4">First Baja California clinic awarded Mexico's Health Tourism Stamp. Dr. Somonte has crossed 500+ zygomatic implant cases as a ZAGA Centers member.</p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Zygomatic</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Full-arch</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Health Tourism Stamp</span>
+        </div>
+        <div class="flex justify-between items-center pt-4 border-t border-border">
+          <div>
+            <p class="text-xs uppercase tracking-widest text-muted">All-on-4 from</p>
+            <p class="font-serif text-lg text-forest">$10,000</p>
+          </div>
+          <a href="#cta" class="px-4 py-2 border border-forest text-forest text-sm rounded-lg hover:bg-forest hover:text-cream transition-all">Get matched</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 6. Dental Solutions Algodones -->
+    <article class="clinic-card bg-white rounded-2xl overflow-hidden border border-border" data-city="algodones">
+      <div class="h-56 overflow-hidden relative bg-forest">
+        <img class="w-full h-full object-cover" alt="Dental Solutions Algodones" src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=800&q=80"/>
+        <div class="absolute top-4 left-4 bg-forest text-cream px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest">Los Algodones, MX</div>
+        <div class="absolute top-4 right-4 bg-cream/95 px-3 py-1 rounded-full text-xs flex items-center gap-1 text-forest font-medium">
+          <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;color:#C86B4A">star</span> 4.7
+        </div>
+      </div>
+      <div class="p-6">
+        <h3 class="text-lg font-medium text-forest mb-1">Dental Solutions Algodones</h3>
+        <p class="text-xs text-muted uppercase tracking-widest mb-3">Dr. Xochipilli</p>
+        <p class="text-sm text-muted leading-relaxed mb-4">All-on-4 specialist with high case volume. Algodones remains the search-pull destination for full-arch tourism — the 60 Minutes segment still drives traffic years later.</p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">All-on-4</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Full-arch</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Implants</span>
+        </div>
+        <div class="flex justify-between items-center pt-4 border-t border-border">
+          <div>
+            <p class="text-xs uppercase tracking-widest text-muted">All-on-4 from</p>
+            <p class="font-serif text-lg text-forest">$10,000</p>
+          </div>
+          <a href="#cta" class="px-4 py-2 border border-forest text-forest text-sm rounded-lg hover:bg-forest hover:text-cream transition-all">Get matched</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 7. Dental Solutions Tijuana -->
+    <article class="clinic-card bg-white rounded-2xl overflow-hidden border border-border" data-city="tijuana">
+      <div class="h-56 overflow-hidden relative bg-forest">
+        <img class="w-full h-full object-cover" alt="Dental Solutions Tijuana" src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80"/>
+        <div class="absolute top-4 left-4 bg-forest text-cream px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest">Tijuana, MX</div>
+        <div class="absolute top-4 right-4 bg-cream/95 px-3 py-1 rounded-full text-xs flex items-center gap-1 text-forest font-medium">
+          <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;color:#C86B4A">star</span> 4.6
+        </div>
+      </div>
+      <div class="p-6">
+        <h3 class="text-lg font-medium text-forest mb-1">Dental Solutions Tijuana</h3>
+        <p class="text-xs text-muted uppercase tracking-widest mb-3">Multi-specialty team</p>
+        <p class="text-sm text-muted leading-relaxed mb-4">Calle 11 location — 15 minutes from the San Ysidro crossing. Built for same-day-return single implants and crowns where overnight stay isn't needed.</p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Same-day return</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Single implants</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Crowns</span>
+        </div>
+        <div class="flex justify-between items-center pt-4 border-t border-border">
+          <div>
+            <p class="text-xs uppercase tracking-widest text-muted">Crown from</p>
+            <p class="font-serif text-lg text-forest">$375</p>
+          </div>
+          <a href="#cta" class="px-4 py-2 border border-forest text-forest text-sm rounded-lg hover:bg-forest hover:text-cream transition-all">Get matched</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 8. Dental Artistry MX -->
+    <article class="clinic-card bg-white rounded-2xl overflow-hidden border border-border" data-city="tijuana">
+      <div class="h-56 overflow-hidden relative bg-forest">
+        <img class="w-full h-full object-cover" alt="Dental Artistry MX" src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=800&q=80"/>
+        <div class="absolute top-4 left-4 bg-forest text-cream px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest">Tijuana, MX</div>
+        <div class="absolute top-4 right-4 bg-cream/95 px-3 py-1 rounded-full text-xs flex items-center gap-1 text-forest font-medium">
+          <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;color:#C86B4A">star</span> 4.8
+        </div>
+      </div>
+      <div class="p-6">
+        <h3 class="text-lg font-medium text-forest mb-1">Dental Artistry MX</h3>
+        <p class="text-xs text-muted uppercase tracking-widest mb-3">Dr. Castellanos</p>
+        <p class="text-sm text-muted leading-relaxed mb-4">Torre Platino address in Zona Río — the premium setting concierge patients expect. We avoid routing $10K+ procedures to Avenida Revolución clinics.</p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Cosmetic</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Veneers</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Premium location</span>
+        </div>
+        <div class="flex justify-between items-center pt-4 border-t border-border">
+          <div>
+            <p class="text-xs uppercase tracking-widest text-muted">Veneer from</p>
+            <p class="font-serif text-lg text-forest">$450</p>
+          </div>
+          <a href="#cta" class="px-4 py-2 border border-forest text-forest text-sm rounded-lg hover:bg-forest hover:text-cream transition-all">Get matched</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 9. PV Smile -->
+    <article class="clinic-card bg-white rounded-2xl overflow-hidden border border-border" data-city="vallarta">
+      <div class="h-56 overflow-hidden relative bg-forest">
+        <img class="w-full h-full object-cover" alt="PV Smile" src="https://images.unsplash.com/photo-1629909615081-b1f78a7fe85b?w=800&q=80"/>
+        <div class="absolute top-4 left-4 bg-forest text-cream px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest">Puerto Vallarta, MX</div>
+        <div class="absolute top-4 right-4 bg-cream/95 px-3 py-1 rounded-full text-xs flex items-center gap-1 text-forest font-medium">
+          <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;color:#C86B4A">star</span> 4.7
+        </div>
+      </div>
+      <div class="p-6">
+        <h3 class="text-lg font-medium text-forest mb-1">PV Smile</h3>
+        <p class="text-xs text-muted uppercase tracking-widest mb-3">Dr. Noel Rivas</p>
+        <p class="text-sm text-muted leading-relaxed mb-4">European Society of Cosmetic Dentistry membership plus UAG training. Euro-aesthetic positioning California patients ask for by name.</p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Cosmetic</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Veneers</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Smile design</span>
+        </div>
+        <div class="flex justify-between items-center pt-4 border-t border-border">
+          <div>
+            <p class="text-xs uppercase tracking-widest text-muted">Veneer from</p>
+            <p class="font-serif text-lg text-forest">$450</p>
+          </div>
+          <a href="#cta" class="px-4 py-2 border border-forest text-forest text-sm rounded-lg hover:bg-forest hover:text-cream transition-all">Get matched</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 10. Simply Dental -->
+    <article class="clinic-card bg-white rounded-2xl overflow-hidden border border-border" data-city="algodones">
+      <div class="h-56 overflow-hidden relative bg-forest">
+        <img class="w-full h-full object-cover" alt="Simply Dental" src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=800&q=80"/>
+        <div class="absolute top-4 left-4 bg-forest text-cream px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest">Los Algodones, MX</div>
+        <div class="absolute top-4 right-4 bg-cream/95 px-3 py-1 rounded-full text-xs flex items-center gap-1 text-forest font-medium">
+          <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;color:#C86B4A">star</span> 4.6
+        </div>
+      </div>
+      <div class="p-6">
+        <h3 class="text-lg font-medium text-forest mb-1">Simply Dental</h3>
+        <p class="text-xs text-muted uppercase tracking-widest mb-3">Owner-operated</p>
+        <p class="text-sm text-muted leading-relaxed mb-4">93 reviews on WhatClinic — one of the highest review counts in Algodones. Owner-operated, fast decision-maker on partnership terms.</p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Implants</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Crowns</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Veneers</span>
+        </div>
+        <div class="flex justify-between items-center pt-4 border-t border-border">
+          <div>
+            <p class="text-xs uppercase tracking-widest text-muted">Implant + crown from</p>
+            <p class="font-serif text-lg text-forest">$1,750</p>
+          </div>
+          <a href="#cta" class="px-4 py-2 border border-forest text-forest text-sm rounded-lg hover:bg-forest hover:text-cream transition-all">Get matched</a>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta" class="mt-20 max-w-7xl mx-auto px-6 md:px-8">
+  <div class="bg-forest text-cream rounded-3xl p-10 md:p-14 flex flex-col md:flex-row items-center justify-between gap-10 relative overflow-hidden">
+    <div class="absolute -top-32 -right-32 w-96 h-96 bg-terracotta/15 rounded-full blur-3xl"></div>
+    <div class="relative z-10 max-w-xl">
+      <h2 class="text-3xl md:text-4xl mb-4 text-cream font-medium leading-tight">Get matched to one of these clinics.</h2>
+      <p class="text-cream/80 leading-relaxed">Tell us your case. We'll match you to the partner clinic that fits — by specialty, not by bid auction — with a treatment plan and quote within 24 hours.</p>
+    </div>
+    <form onsubmit="submitWaitlist(event, 'Clinics')" class="relative z-10 grid grid-cols-1 gap-3 w-full md:w-auto md:min-w-[360px]">
+      <input name="name"  type="text"  required placeholder="Your name"
+        class="px-4 py-3 rounded-lg bg-cream text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light"/>
+      <input name="email" type="email" required placeholder="you@example.com"
+        class="px-4 py-3 rounded-lg bg-cream text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light"/>
+      <input name="phone" type="tel"   required placeholder="Phone (US)" inputmode="tel"
+        class="px-4 py-3 rounded-lg bg-cream text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light"/>
+      <button type="submit"
+        class="px-6 py-3 rounded-lg bg-terracotta text-cream font-medium hover:bg-terra-deep transition-all flex items-center justify-center gap-2">
+        Get my treatment plan
+        <span class="material-symbols-outlined text-base">arrow_forward</span>
+      </button>
+    </form>
+  </div>
+  <div id="successClinics" class="success-msg mt-6 max-w-md mx-auto text-center">
+    You're on the list. We'll match you to a clinic and respond within 24 hours.
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="bg-forest-dark text-cream/80 border-t border-forest mt-20">
+  <div class="py-12 px-6 md:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+    <div class="space-y-3">
+      <div class="font-serif text-xl font-semibold text-cream">Medivoyage</div>
+      <p class="text-xs leading-relaxed text-cream/60">An AI concierge for cross-border dental care. Pre-launching summer 2026.</p>
+    </div>
+    <div class="space-y-3">
+      <h5 class="text-cream text-xs uppercase tracking-widest font-medium">Site</h5>
+      <ul class="space-y-2 text-xs">
+        <li><a href="/how-it-works" class="hover:text-cream transition-colors">How it works</a></li>
+        <li><a href="/savings" class="hover:text-cream transition-colors">Savings calculator</a></li>
+        <li><a href="/clinics" class="hover:text-cream transition-colors">Partner clinics</a></li>
+        <li><a href="/procedures/dental-implants" class="hover:text-cream transition-colors">Dental implants</a></li>
+      </ul>
+    </div>
+    <div class="space-y-3">
+      <h5 class="text-cream text-xs uppercase tracking-widest font-medium">Destinations</h5>
+      <ul class="space-y-2 text-xs">
+        <li>Tijuana, Baja California</li>
+        <li>Los Algodones, Baja California</li>
+        <li>Cancún, Quintana Roo</li>
+        <li>Puerto Vallarta, Jalisco</li>
+      </ul>
+    </div>
+    <div class="space-y-3">
+      <h5 class="text-cream text-xs uppercase tracking-widest font-medium">Contact</h5>
+      <ul class="space-y-2 text-xs">
+        <li><a href="mailto:hello@medivoyage.health" class="hover:text-cream transition-colors">hello@medivoyage.health</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-forest py-6 px-8 text-center text-xs text-cream/60">© 2026 Medivoyage Health</div>
+</footer>
+
+<!-- Firebase auto-init -->
+<script defer src="/__/firebase/10.12.0/firebase-app-compat.js"></script>
+<script defer src="/__/firebase/10.12.0/firebase-firestore-compat.js"></script>
+<script defer src="/__/firebase/init.js"></script>
+<script>
+  // Filter clinic cards by city
+  document.querySelectorAll('.filter-chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      var city = chip.dataset.city;
+      var visible = 0;
+      document.querySelectorAll('.clinic-card').forEach(function(card){
+        if (city === 'all' || card.dataset.city === city) { card.classList.remove('hidden'); visible++; }
+        else card.classList.add('hidden');
+      });
+      document.getElementById('visible-count').textContent = visible;
+    });
+  });
+
+  function submitWaitlist(e, id) {
+    e.preventDefault();
+    var form = e.target;
+    var btn  = form.querySelector('button[type=submit]');
+    var name  = (form.querySelector('input[name=name]')  || {}).value || '';
+    var email = (form.querySelector('input[name=email]') || {}).value || '';
+    var phone = (form.querySelector('input[name=phone]') || {}).value || '';
+    name = name.trim(); email = email.trim(); phone = phone.trim();
+    if (!name || !email || !phone) return;
+    if (btn) { btn.disabled = true; btn.innerHTML = 'Joining…'; }
+    function showSuccess() {
+      form.style.display = 'none';
+      var success = document.getElementById('success' + id);
+      if (success) success.classList.add('active');
+    }
+    var payload = { name:name, email:email, phone:phone, source:id, page:location.pathname,
+      referrer:document.referrer || '', userAgent:navigator.userAgent || '' };
+    if (window.firebase && firebase.firestore) {
+      payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      firebase.firestore().collection('leads').add(payload).then(showSuccess).catch(function(err){
+        console.error('Firestore write failed:', err); showSuccess();
+      });
+    } else { console.warn('Firebase not available — lead not persisted:', payload); showSuccess(); }
+  }
+</script>
+</body>
+</html>
