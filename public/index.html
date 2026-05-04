@@ -3,638 +3,443 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Medivoyage Health — Dental care worth the trip.</title>
-<meta name="description" content="World-class dental care, made easy. AI concierge matches you to vetted Mexican clinics, handles travel and post-op — for a fraction of US prices." />
+<title>Medivoyage Health — AI concierge for cross-border dental care</title>
+<meta name="description" content="An AI concierge for US patients seeking world-class dental care in Mexico. We pre-screen clinics, build your treatment plan, and handle the full journey end-to-end." />
+
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
 <meta name="theme-color" content="#1B3B36" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          forest:       "#1B3B36",
+          "forest-dark":"#132A26",
+          "forest-deep":"#032521",
+          cream:        "#F7F2EA",
+          "cream-warm": "#EFEAE1",
+          "cream-bright":"#FDFAF3",
+          terracotta:   "#C86B4A",
+          "terra-light":"#FFB59C",
+          "terra-deep": "#7A3013",
+          brass:        "#B08A5B",
+          charcoal:     "#3A3A37",
+          muted:        "#6B6963",
+          border:       "#E4DCCC",
+        },
+        fontFamily: {
+          serif: ["Fraunces", "Georgia", "serif"],
+          sans:  ["Inter", "system-ui", "sans-serif"],
+        }
+      }
+    }
+  };
+</script>
+
 <style>
-  :root {
-    --cream: #F7F2EA;
-    --cream-warm: #EFEAE1;
-    --cream-bright: #FDFAF3;
-    --forest: #1B3B36;
-    --forest-dark: #132A26;
-    --terracotta: #C86B4A;
-    --terracotta-dark: #A5543A;
-    --brass: #B08A5B;
-    --charcoal: #3A3A37;
-    --muted: #6B6963;
-    --border: #E4DCCC;
+  body { font-family: "Inter", system-ui, sans-serif; background: #F7F2EA; color: #3A3A37; }
+  h1,h2,h3,h4 { font-family: "Fraunces", Georgia, serif; color: #1B3B36; }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: var(--cream);
-    color: var(--charcoal);
-    font-size: 17px;
-    line-height: 1.55;
-    -webkit-font-smoothing: antialiased;
+  .hero-overlay {
+    background: linear-gradient(135deg, rgba(19,42,38,0.92) 0%, rgba(27,59,54,0.78) 60%, rgba(27,59,54,0.55) 100%);
   }
-  h1, h2, h3, .serif {
-    font-family: 'Fraunces', Georgia, serif;
-    color: var(--forest);
-    font-weight: 500;
-    letter-spacing: -0.01em;
-  }
-  a { color: var(--forest); text-decoration: none; }
-  a:hover { color: var(--terracotta); }
-  .container { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
-  @media (max-width: 640px) { .container { padding: 0 20px; } }
-
-  /* ========== NAV ========== */
-  nav {
-    padding: 28px 0;
-    border-bottom: 1px solid var(--border);
-    background: var(--cream);
-    position: sticky; top: 0; z-index: 10;
-    backdrop-filter: blur(8px);
-    background: rgba(247, 242, 234, 0.92);
-  }
-  .nav-inner { display: flex; justify-content: space-between; align-items: center; }
-  .logo {
-    font-family: 'Fraunces', serif;
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--forest);
-    letter-spacing: -0.02em;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .logo-mark {
-    width: 22px; height: 22px;
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .nav-links { display: flex; gap: 32px; align-items: center; font-size: 15px; }
-  .nav-links a { color: var(--muted); font-weight: 500; }
-  .nav-links a:hover { color: var(--forest); }
-  .nav-cta {
-    background: var(--forest); color: var(--cream) !important;
-    padding: 10px 22px; border-radius: 999px; font-size: 14px; font-weight: 500;
-    transition: background 0.2s ease;
-  }
-  .nav-cta:hover { background: var(--terracotta); color: var(--cream) !important; }
-  @media (max-width: 720px) {
-    .nav-links a:not(.nav-cta) { display: none; }
-  }
-
-  /* ========== HERO ========== */
-  .hero { padding: 80px 0 100px; }
-  .hero-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 64px; align-items: center; }
-  @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; gap: 48px; } }
-
-  .eyebrow {
-    display: inline-flex; align-items: center; gap: 10px;
-    font-size: 13px; font-weight: 500; color: var(--terracotta);
-    letter-spacing: 0.08em; text-transform: uppercase;
-    margin-bottom: 24px;
-  }
-  .eyebrow-dot {
-    width: 6px; height: 6px; background: var(--terracotta); border-radius: 50%;
-    box-shadow: 0 0 0 4px rgba(200, 107, 74, 0.18);
-  }
-
-  h1 {
-    font-size: clamp(44px, 6vw, 72px);
-    line-height: 1.02;
-    font-weight: 400;
-    margin-bottom: 28px;
-  }
-  h1 em {
-    font-style: italic; font-weight: 400;
-    color: var(--terracotta);
-  }
-  .hero-sub {
-    font-size: 19px; color: var(--muted); max-width: 520px; margin-bottom: 40px;
-    line-height: 1.55;
-  }
-
-  /* Waitlist form */
-  .waitlist {
-    display: flex; flex-direction: column; gap: 10px; max-width: 480px;
-  }
-  .waitlist input {
-    width: 100%; border: 1px solid var(--border); outline: none;
-    padding: 14px 20px; background: #fff; font-size: 15px;
-    font-family: inherit; color: var(--forest); border-radius: 14px;
-    box-shadow: 0 2px 24px rgba(27, 59, 54, 0.04);
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  }
-  .waitlist input::placeholder { color: #A8A39A; }
-  .waitlist input:focus {
-    border-color: var(--forest);
-    box-shadow: 0 2px 24px rgba(27, 59, 54, 0.08);
-  }
-  .waitlist button {
-    background: var(--forest); color: var(--cream);
-    border: none; padding: 16px 28px; border-radius: 14px;
-    font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit;
-    letter-spacing: 0.01em; transition: background 0.2s ease;
-    margin-top: 4px;
-  }
-  .waitlist button:hover { background: var(--terracotta); }
-  .waitlist button[disabled] { opacity: 0.6; cursor: wait; }
-  .waitlist-note { margin-top: 14px; font-size: 13px; color: var(--muted); }
-  .waitlist-success {
-    display: none; padding: 18px 24px; background: #fff;
-    border: 1px solid var(--brass); border-radius: 16px; max-width: 480px;
-    color: var(--forest); font-size: 15px;
-  }
-  .waitlist-success.active { display: block; }
-
-  /* Hero visual */
-  .hero-visual {
-    position: relative; aspect-ratio: 4/5; max-height: 560px;
-    border-radius: 24px; overflow: hidden;
-    background: linear-gradient(135deg, #E8D9C4 0%, #D9B894 60%, #C89A6E 100%);
-    box-shadow: 0 12px 40px rgba(27, 59, 54, 0.12);
-  }
-  .hero-visual-inner {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column; justify-content: space-between;
-    padding: 36px;
-  }
-  .hero-card {
-    background: rgba(253, 250, 243, 0.96);
-    padding: 22px 26px; border-radius: 18px;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 4px 20px rgba(27, 59, 54, 0.08);
-  }
-  .hero-card-top { align-self: flex-start; max-width: 240px; }
-  .hero-card-top .row { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
-  .hero-card-top .big { font-family: 'Fraunces', serif; font-size: 28px; color: var(--forest); font-weight: 500; }
-  .hero-card-top .big s { color: #AFB2A8; font-weight: 400; }
-  .hero-card-top .save { color: var(--terracotta); font-weight: 500; font-size: 14px; margin-top: 4px; }
-
-  .hero-card-bottom { align-self: flex-end; max-width: 320px; }
-  .hero-included-title {
-    font-family: 'Fraunces', serif; font-size: 15px; color: var(--forest);
-    font-weight: 500; letter-spacing: 0.02em; margin-bottom: 12px;
-  }
-  .hero-included { list-style: none; padding: 0; margin: 0; }
-  .hero-included li {
-    position: relative; padding: 6px 0 6px 22px;
-    font-size: 14px; color: var(--forest); line-height: 1.45;
-    border-bottom: 1px solid rgba(27, 59, 54, 0.06);
-  }
-  .hero-included li:last-child { border-bottom: none; }
-  .hero-included li::before {
-    content: ""; position: absolute; left: 0; top: 12px;
-    width: 14px; height: 14px; border-radius: 50%;
-    background: var(--brass); opacity: 0.85;
-    background-image: linear-gradient(135deg, var(--brass) 0%, var(--terracotta) 100%);
-  }
-  .hero-included li::after {
-    content: "✓"; position: absolute; left: 3px; top: 7px;
-    font-size: 10px; color: var(--cream); font-weight: 700; line-height: 1;
-  }
-
-  .hero-compass {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%); opacity: 0.18;
-  }
-
-  /* ========== TRUST ROW ========== */
-  .trust {
-    padding: 48px 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    background: var(--cream-warm);
-  }
-  .trust-grid {
-    display: grid; grid-template-columns: auto repeat(4, 1fr); gap: 48px;
-    align-items: center;
-  }
-  @media (max-width: 900px) { .trust-grid { grid-template-columns: 1fr; text-align: center; gap: 24px; } }
-  .trust-label {
-    font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500;
-  }
-  .trust-item {
-    font-family: 'Fraunces', serif; font-size: 15px; color: var(--forest); font-weight: 500;
-  }
-  .trust-item span { display: block; color: var(--muted); font-family: 'Inter', sans-serif; font-size: 12px; margin-top: 2px; font-weight: 400; }
-
-  /* ========== SECTIONS ========== */
-  section { padding: 100px 0; }
-  @media (max-width: 640px) { section { padding: 72px 0; } }
-  .section-label {
-    font-size: 13px; font-weight: 500; color: var(--terracotta);
-    letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 18px;
-  }
-  h2 {
-    font-size: clamp(34px, 4.5vw, 52px);
-    line-height: 1.1; font-weight: 400;
-    max-width: 720px; margin-bottom: 24px;
-  }
-  h2 em { font-style: italic; color: var(--terracotta); }
-  .section-intro {
-    max-width: 620px; color: var(--muted); font-size: 18px; margin-bottom: 64px;
-  }
-
-  /* ========== HOW IT WORKS ========== */
-  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
-  @media (max-width: 900px) { .steps { grid-template-columns: 1fr; gap: 32px; } }
-  .step {
-    background: #fff; border-radius: 20px; padding: 40px 32px;
-    border: 1px solid var(--border);
-    position: relative; transition: transform 0.2s ease;
-  }
-  .step:hover { transform: translateY(-4px); }
-  .step-num {
-    font-family: 'Fraunces', serif; font-size: 32px; color: var(--brass);
-    font-weight: 500; margin-bottom: 18px; font-style: italic;
-  }
-  .step h3 { font-size: 22px; margin-bottom: 12px; font-weight: 500; }
-  .step p { color: var(--muted); font-size: 15px; line-height: 1.6; }
-
-  /* ========== PRICE COMPARISON ========== */
-  .price-section { background: var(--forest); color: var(--cream); }
-  .price-section h2 { color: var(--cream-bright); }
-  .price-section h2 em { color: var(--brass); }
-  .price-section .section-label { color: var(--brass); }
-  .price-section .section-intro { color: rgba(247, 242, 234, 0.72); }
-  .price-table {
-    background: rgba(247, 242, 234, 0.05); border: 1px solid rgba(247, 242, 234, 0.12);
-    border-radius: 20px; overflow: hidden;
-  }
-  .price-row {
-    display: grid; grid-template-columns: 1.4fr 1fr 1fr 0.8fr;
-    padding: 22px 32px; align-items: center;
-    border-top: 1px solid rgba(247, 242, 234, 0.08);
-  }
-  .price-row:first-child { border-top: none; }
-  .price-head {
-    background: rgba(247, 242, 234, 0.04);
-    font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em;
-    color: rgba(247, 242, 234, 0.6); font-weight: 500;
-  }
-  .price-procedure { font-family: 'Fraunces', serif; font-size: 18px; color: var(--cream-bright); }
-  .price-us { color: rgba(247, 242, 234, 0.5); text-decoration: line-through; }
-  .price-mx { color: var(--cream-bright); font-weight: 500; font-size: 18px; }
-  .price-save { color: var(--brass); font-weight: 500; font-size: 14px; }
-  @media (max-width: 640px) {
-    .price-row { grid-template-columns: 1fr 1fr; gap: 8px; padding: 18px 20px; }
-    .price-head { display: none; }
-    .price-procedure { grid-column: 1 / -1; margin-bottom: 8px; }
-  }
-
-  /* ========== WHY MEDIVOYAGE ========== */
-  .why-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
-  @media (max-width: 720px) { .why-grid { grid-template-columns: 1fr; } }
-  .why-card {
-    background: var(--cream-bright); border-radius: 20px; padding: 36px;
-    border: 1px solid var(--border);
-  }
-  .why-icon {
-    width: 44px; height: 44px; border-radius: 12px;
-    background: var(--forest); color: var(--cream);
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 22px;
-  }
-  .why-card h3 { font-size: 22px; margin-bottom: 10px; font-weight: 500; }
-  .why-card p { color: var(--muted); font-size: 15px; line-height: 1.6; }
-
-  /* ========== FAQ ========== */
-  .faq-section { background: var(--cream-warm); }
-  .faq-list { max-width: 820px; margin: 0 auto; }
-  .faq-item {
-    border-top: 1px solid var(--border);
-    padding: 28px 0;
-  }
-  .faq-item:last-child { border-bottom: 1px solid var(--border); }
-  .faq-q {
-    font-family: 'Fraunces', serif; font-size: 21px; color: var(--forest);
-    cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center;
-    font-weight: 500;
-  }
-  .faq-q::-webkit-details-marker { display: none; }
-  .faq-q::after {
-    content: '+'; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 300;
-    color: var(--terracotta); transition: transform 0.2s ease;
-  }
-  details[open] .faq-q::after { content: '−'; }
-  .faq-a { color: var(--muted); font-size: 16px; line-height: 1.65; padding-top: 14px; max-width: 720px; }
-
-  /* ========== FINAL CTA ========== */
-  .final-cta {
-    padding: 120px 0; text-align: center;
-    background: linear-gradient(180deg, var(--cream) 0%, var(--cream-warm) 100%);
-  }
-  .final-cta h2 { margin: 0 auto 24px; }
-  .final-cta .waitlist { margin: 32px auto 0; }
-  .final-cta .waitlist-success { margin: 24px auto 0; }
-
-  /* ========== FOOTER ========== */
-  footer { padding: 48px 0; border-top: 1px solid var(--border); font-size: 14px; color: var(--muted); }
-  .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
-  .footer-links { display: flex; gap: 28px; }
-  .footer-links a { color: var(--muted); }
-  .footer-links a:hover { color: var(--forest); }
-
-  /* Smooth fade animation */
-  .fade-in { opacity: 0; transform: translateY(12px); animation: fadeIn 0.8s ease forwards; }
-  .fade-in.delay-1 { animation-delay: 0.1s; }
-  .fade-in.delay-2 { animation-delay: 0.2s; }
-  @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+  .success-msg { display: none; padding: 18px 24px; background: #fff; border-radius: 14px; border: 1px solid #E4DCCC; color: #1B3B36; font-size: 15px; }
+  .success-msg.active { display: block; }
+  .terracotta-dot { width: 6px; height: 6px; background: #C86B4A; border-radius: 50%; display: inline-block; }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #F7F2EA; }
+  ::-webkit-scrollbar-thumb { background: #1B3B36; border-radius: 4px; }
 </style>
 </head>
-<body>
 
-<!-- ========== NAV ========== -->
-<nav>
-  <div class="container nav-inner">
-    <a href="#" class="logo">
-      <span class="logo-mark">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
-          <path d="M12 7l3 5-3 5-3-5z" fill="currentColor" stroke="none"/>
-        </svg>
-      </span>
-      Medivoyage
-    </a>
-    <div class="nav-links">
-      <a href="#how">How it works</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#faq">FAQ</a>
-      <a href="#waitlist" class="nav-cta">Join waitlist</a>
-    </div>
-  </div>
-</nav>
+<body class="bg-cream text-charcoal">
 
-<!-- ========== HERO ========== -->
-<header class="hero">
-  <div class="container hero-grid">
-    <div class="fade-in">
-      <div class="eyebrow"><span class="eyebrow-dot"></span>Now accepting founding members</div>
-      <h1>Dental care<br/><em>worth the trip.</em></h1>
-      <p class="hero-sub">World-class implants, veneers, and full-mouth care at vetted Mexican clinics — for 70% less than the US. Our AI concierge reads your x-rays, matches you to the right clinic, and handles travel, translation, and post-op follow-up.</p>
-
-      <form class="waitlist" id="waitlistHero" onsubmit="submitWaitlist(event, 'Hero')">
-        <input type="text" name="name" placeholder="Your name" autocomplete="name" required />
-        <input type="email" name="email" placeholder="your@email.com" autocomplete="email" required />
-        <input type="tel" name="phone" placeholder="Phone (for a 10-min match call)" autocomplete="tel" required />
-        <button type="submit">Join waitlist</button>
-      </form>
-      <p class="waitlist-note">No spam. We'll reach out once we're ready to match you to a clinic.</p>
-
-      <div class="waitlist-success" id="successHero">
-        You're on the list. We'll reach out with a short intake form soon — so we can match you to the right clinic when we launch.
-      </div>
-    </div>
-
-    <div class="hero-visual fade-in delay-1" aria-hidden="true">
-      <!-- Decorative compass -->
-      <svg class="hero-compass" width="280" height="280" viewBox="0 0 280 280" fill="none" stroke="#1B3B36" stroke-width="1">
-        <circle cx="140" cy="140" r="110"/>
-        <circle cx="140" cy="140" r="80"/>
-        <path d="M140 40 L150 140 L140 160 L130 140 Z" fill="#1B3B36" opacity="0.8"/>
-        <path d="M140 240 L150 140 L140 120 L130 140 Z" fill="#1B3B36" opacity="0.3"/>
-        <path d="M40 140 L140 150 L160 140 L140 130 Z" fill="#1B3B36" opacity="0.3"/>
-        <path d="M240 140 L140 150 L120 140 L140 130 Z" fill="#1B3B36" opacity="0.3"/>
-      </svg>
-
-      <div class="hero-visual-inner">
-        <div class="hero-card hero-card-top">
-          <div class="row"><span>All-on-4 (per arch)</span><span>Tijuana</span></div>
-          <div class="big">$10,500 <s>$26,000</s></div>
-          <div class="save">You save $15,500</div>
-        </div>
-        <div class="hero-card hero-card-bottom">
-          <div class="hero-included-title">Every booking includes</div>
-          <ul class="hero-included">
-            <li>AI x-ray review + clinic match</li>
-            <li>Flights, hotel, ground transport</li>
-            <li>On-site translation at every visit</li>
-            <li>90 days of post-op voice check-ins</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+<!-- ========== HEADER ========== -->
+<header class="bg-cream/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-border">
+  <div class="flex justify-between items-center h-20 px-6 md:px-8 max-w-7xl mx-auto">
+    <a href="/" class="font-serif text-2xl font-semibold text-forest tracking-tight">Medivoyage</a>
+    <nav class="hidden md:flex items-center gap-8">
+      <a href="#how-it-works" class="text-xs uppercase tracking-widest text-muted hover:text-forest transition-colors">How it works</a>
+      <a href="#advantage" class="text-xs uppercase tracking-widest text-muted hover:text-forest transition-colors">Why Mexico</a>
+      <a href="#clinics" class="text-xs uppercase tracking-widest text-muted hover:text-forest transition-colors">Partner clinics</a>
+      <a href="#waitlist" class="text-xs uppercase tracking-widest text-muted hover:text-forest transition-colors">Waitlist</a>
+    </nav>
+    <a href="#waitlist" class="px-5 py-2.5 rounded-lg bg-forest text-cream text-sm font-medium hover:bg-forest-dark transition-all">Join waitlist</a>
   </div>
 </header>
 
-<!-- ========== TRUST ROW ========== -->
-<section class="trust" style="padding: 48px 0;">
-  <div class="container trust-grid">
-    <div class="trust-label">Partner clinics</div>
-    <div class="trust-item">ADA-certified dentists<span>Rigorously vetted</span></div>
-    <div class="trust-item">ICOI implant specialists<span>Board-credentialed</span></div>
-    <div class="trust-item">AAAASF accredited<span>Hospital-grade facilities</span></div>
-    <div class="trust-item">15+ years average<span>Experienced providers</span></div>
+<main class="pt-20">
+
+<!-- ========== HERO ========== -->
+<section class="relative min-h-[88vh] flex items-center overflow-hidden">
+  <div class="absolute inset-0 z-0">
+    <img class="w-full h-full object-cover" alt="A serene, modern dental clinic interior with natural light and warm wood tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUcGs3ElAh5WvyfZIqORTwuw51xOQCYFK--zKlSu_1DEaZ4uR7QRZEHR_PzfHCxglisveHKcKq1nzWzgArvpP6KO2ZAyl5ATJ8Zn7gm8OdWeykpEO0GxbWHeok0fAy2tmBgimTOJyt0zdw2FNNZth9rLR_TuNjjebSnAKWycSlLk_XTtxq34yHaup2-9OcTQUghMGrsWsb0rGR--4XNuNT57Tv6mJgycih1_jJ3Ndpd3Hr3XRB8sEZIwbK4TcHpAokaWB6oU72Oj0" />
+    <div class="absolute inset-0 hero-overlay"></div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6 md:px-8 w-full py-20">
+    <div class="max-w-3xl">
+      <span class="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-cream/15 border border-cream/20 backdrop-blur text-cream text-xs uppercase tracking-widest font-medium mb-6">
+        <span class="terracotta-dot"></span>
+        Now onboarding our first patients
+      </span>
+
+      <h1 class="font-serif text-4xl md:text-6xl text-cream leading-tight mb-6 font-medium">
+        World-class dental care.<br/>
+        <span class="text-terra-light italic font-normal">Without the US bill.</span>
+      </h1>
+
+      <p class="text-lg text-cream/85 mb-10 max-w-xl leading-relaxed">
+        Medivoyage is an AI concierge for cross-border dental care. We read your x-rays,
+        match you to a vetted Mexican clinic, and handle flights, translation, and
+        post-op care — for a fraction of US prices.
+      </p>
+
+      <!-- WAITLIST FORM (hero) -->
+      <div id="waitlist" class="bg-cream/10 backdrop-blur-xl p-6 rounded-2xl border border-cream/20 shadow-2xl max-w-2xl">
+        <p class="text-cream font-medium mb-4 text-sm uppercase tracking-widest">Join the waitlist · No commitment</p>
+        <form onsubmit="submitWaitlist(event, 'Hero')" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <input name="name"  type="text"  required placeholder="Your name"
+            class="px-4 py-3 rounded-lg bg-white text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light"/>
+          <input name="email" type="email" required placeholder="you@example.com"
+            class="px-4 py-3 rounded-lg bg-white text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light"/>
+          <input name="phone" type="tel"   required placeholder="Phone (US)" inputmode="tel"
+            class="px-4 py-3 rounded-lg bg-white text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light md:col-span-1"/>
+          <button type="submit"
+            class="px-6 py-3 rounded-lg bg-terracotta text-cream font-medium hover:bg-terra-deep transition-all md:col-span-1 flex items-center justify-center gap-2">
+            Get my treatment plan
+            <span class="material-symbols-outlined text-base">arrow_forward</span>
+          </button>
+        </form>
+        <div id="successHero" class="success-msg mt-4">
+          You're on the list. We'll reach out within 24 hours with next steps.
+        </div>
+      </div>
+
+      <p class="mt-6 text-cream/70 text-sm">
+        Pre-launching summer 2026. Founding patients receive priority placement and locked-in concierge pricing.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TRUST BAND ========== -->
+<section class="py-10 bg-cream-bright border-y border-border">
+  <div class="max-w-7xl mx-auto px-6 md:px-8">
+    <p class="text-xs uppercase tracking-widest text-muted text-center mb-6">Our partner clinics meet credentialing standards from</p>
+    <div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-6">
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-2xl text-forest/70">verified_user</span>
+        <span class="text-forest font-serif font-medium">ADA-recognized</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-2xl text-forest/70">medical_services</span>
+        <span class="text-forest font-serif font-medium">COFEPRIS-licensed</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-2xl text-forest/70">workspace_premium</span>
+        <span class="text-forest font-serif font-medium">AACD members</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-2xl text-forest/70">shield</span>
+        <span class="text-forest font-serif font-medium">HIPAA-aware data handling</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ADVANTAGE / BENTO ========== -->
+<section id="advantage" class="py-20 max-w-7xl mx-auto px-6 md:px-8">
+  <div class="mb-12 max-w-2xl">
+    <p class="text-xs uppercase tracking-widest text-terracotta font-medium mb-3">Why Mexico</p>
+    <h2 class="text-3xl md:text-4xl text-forest leading-tight mb-4 font-medium">
+      Same crowns. Same implants.<br/>
+      <span class="italic font-normal">Different price tag.</span>
+    </h2>
+    <p class="text-muted">
+      The Mexican Health Ministry estimates 1.2 million Americans cross the border every year for dental care.
+      We're the AI concierge that makes that journey safe, planned, and stress-free.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+
+    <!-- Big savings tile -->
+    <div class="md:col-span-8 bg-forest text-cream rounded-3xl p-10 md:p-12 flex flex-col justify-between overflow-hidden relative min-h-[360px]">
+      <div class="relative z-10">
+        <h3 class="text-2xl md:text-3xl font-medium text-cream mb-4">The cost gap is real</h3>
+        <p class="text-cream/80 max-w-md leading-relaxed">
+          A full-arch implant procedure that runs $30,000+ in the US averages $7,000–$10,000
+          at our partner clinics — using the same Straumann and Nobel Biocare systems your
+          US dentist quotes by name.
+        </p>
+      </div>
+      <div class="relative z-10 flex items-baseline gap-4 mt-8">
+        <span class="font-serif text-6xl md:text-7xl text-terra-light leading-none">60–70%</span>
+        <span class="text-cream uppercase tracking-widest text-sm font-medium">typical savings vs. US prices</span>
+      </div>
+      <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-terracotta/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Quality tile -->
+    <div class="md:col-span-4 bg-cream-warm rounded-3xl p-8 flex flex-col gap-5">
+      <div class="w-12 h-12 bg-forest text-cream rounded-xl flex items-center justify-center">
+        <span class="material-symbols-outlined">verified</span>
+      </div>
+      <h3 class="text-xl font-medium text-forest">Vetted clinics only</h3>
+      <p class="text-muted leading-relaxed">
+        We screen for credentialing (ADA, AACD, ABOI, ICOI), equipment standards
+        (Planmeca, Sirona), and case volume before any clinic joins our network.
+      </p>
+    </div>
+
+    <!-- Travel tile -->
+    <div class="md:col-span-4 bg-terracotta text-cream rounded-3xl p-8 flex flex-col gap-5">
+      <div class="w-12 h-12 bg-cream/15 backdrop-blur text-cream rounded-xl flex items-center justify-center border border-cream/20">
+        <span class="material-symbols-outlined">flight</span>
+      </div>
+      <h3 class="text-xl font-medium text-cream">A short flight away</h3>
+      <p class="text-cream/85 leading-relaxed">
+        Tijuana is 15 minutes from San Ysidro. Algodones is 7 minutes from Yuma.
+        Cancún and Vallarta are direct flights from major US hubs.
+      </p>
+    </div>
+
+    <!-- Concierge tile -->
+    <div class="md:col-span-8 bg-white border border-border rounded-3xl p-8 md:p-10 flex flex-col md:flex-row gap-8 items-center">
+      <div class="flex-1">
+        <h3 class="text-xl md:text-2xl font-medium text-forest mb-3">A real concierge, not a marketplace</h3>
+        <p class="text-muted leading-relaxed mb-6">
+          You don't get bid on by 50 clinics. You get one clinic — chosen because
+          your case fits their specialty — and a single point of contact from
+          first message to post-op check-in.
+        </p>
+        <ul class="space-y-3">
+          <li class="flex items-center gap-3 text-forest text-sm">
+            <span class="material-symbols-outlined text-terracotta text-base">check_circle</span>
+            AI reads your x-ray and drafts a treatment plan
+          </li>
+          <li class="flex items-center gap-3 text-forest text-sm">
+            <span class="material-symbols-outlined text-terracotta text-base">check_circle</span>
+            We coordinate flights, hotels, ground transport
+          </li>
+          <li class="flex items-center gap-3 text-forest text-sm">
+            <span class="material-symbols-outlined text-terracotta text-base">check_circle</span>
+            English-language post-op follow-ups, on us
+          </li>
+        </ul>
+      </div>
+      <div class="w-full md:w-1/3 aspect-square rounded-2xl overflow-hidden shadow-lg">
+        <img class="w-full h-full object-cover" alt="A friendly concierge assistant at a bright airport terminal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDE4ENgY2CiTOIZMbWfuuGAlAx6zpVD262dKhGp4G30JIQsYbSPg05Xk0gpYPDp-_jFvGlcUsteM4yCdGSMTT7rNxS7MvHfwj1xrs61WIoUkfVkaqPGAt9BbLfCYg0xqgWfu7xYf9H0DnvaacP8S_PdN3GAcEdFIqiWbDj6n7e0d7xDj3W_Hl849CFL6aVpXKCNMotZaawQUBGu_1azEejMefz4ycmKa3yMPTHTOVH9jBjJ3d1Hb-tzTQko10_aMeLx3gkFHKuDj9Y" />
+      </div>
+    </div>
+
   </div>
 </section>
 
 <!-- ========== HOW IT WORKS ========== -->
-<section id="how">
-  <div class="container">
-    <div class="section-label">How it works</div>
-    <h2>A concierge in your pocket — <em>from consult to recovery.</em></h2>
-    <p class="section-intro">Most Americans book dental tourism through Facebook groups and lead-gen directories. Medivoyage is a real brand, backed by AI, accountable to you from the first x-ray to the last follow-up call.</p>
+<section id="how-it-works" class="py-20 bg-cream-warm">
+  <div class="max-w-7xl mx-auto px-6 md:px-8">
+    <div class="mb-12 max-w-2xl">
+      <p class="text-xs uppercase tracking-widest text-terracotta font-medium mb-3">How it works</p>
+      <h2 class="text-3xl md:text-4xl text-forest leading-tight mb-4 font-medium">
+        Five steps, no surprises.
+      </h2>
+    </div>
 
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">01</div>
-        <h3>Share your records</h3>
-        <p>Upload your x-rays, a few photos, and your medical history. Our AI reviews everything in minutes and builds a personalized treatment plan you can actually understand.</p>
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <div class="bg-white border border-border rounded-2xl p-6">
+        <div class="text-3xl font-serif text-terracotta font-medium mb-4">01</div>
+        <h4 class="text-base font-medium text-forest mb-2">Tell us your case</h4>
+        <p class="text-sm text-muted leading-relaxed">Share an x-ray and a few photos. Our AI flags the procedure type and complexity.</p>
       </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <h3>We match you to a clinic</h3>
-        <p>Three vetted clinics, real dentist bios, transparent pricing, and a recommended match based on your specific case. You choose. We book the consult and coordinate your trip.</p>
+      <div class="bg-white border border-border rounded-2xl p-6">
+        <div class="text-3xl font-serif text-terracotta font-medium mb-4">02</div>
+        <h4 class="text-base font-medium text-forest mb-2">Get a treatment plan</h4>
+        <p class="text-sm text-muted leading-relaxed">A first-draft plan with US vs. Mexico cost comparison, reviewed by a partner dentist within 24 hours.</p>
       </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <h3>Care, end-to-end</h3>
-        <p>Flights, hotel, ground transport, translation, and daily post-op check-ins via voice — all handled. You're never 2,000 miles from your surgeon alone.</p>
+      <div class="bg-white border border-border rounded-2xl p-6">
+        <div class="text-3xl font-serif text-terracotta font-medium mb-4">03</div>
+        <h4 class="text-base font-medium text-forest mb-2">We pick the clinic</h4>
+        <p class="text-sm text-muted leading-relaxed">Matched by specialty and case fit — not bid auctions. One clinic, one quote, locked.</p>
+      </div>
+      <div class="bg-white border border-border rounded-2xl p-6">
+        <div class="text-3xl font-serif text-terracotta font-medium mb-4">04</div>
+        <h4 class="text-base font-medium text-forest mb-2">We book the trip</h4>
+        <p class="text-sm text-muted leading-relaxed">Flights, hotel, ground transport, translation if needed. You bring a passport and show up.</p>
+      </div>
+      <div class="bg-white border border-border rounded-2xl p-6">
+        <div class="text-3xl font-serif text-terracotta font-medium mb-4">05</div>
+        <h4 class="text-base font-medium text-forest mb-2">Aftercare in English</h4>
+        <p class="text-sm text-muted leading-relaxed">Voice and text check-ins post-op so you're never on hold with an international clinic.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ========== PRICE COMPARISON ========== -->
-<section class="price-section" id="pricing">
-  <div class="container">
-    <div class="section-label">Transparent pricing</div>
-    <h2>The same procedure. <em>A fraction of the price.</em></h2>
-    <p class="section-intro">Our partner clinics use the same implant brands (Straumann, Nobel Biocare, BioHorizons), the same materials, and the same techniques as top US practices. You're paying less because dentist overhead and real estate are lower — not because the work is.</p>
+<!-- ========== FEATURED CLINICS ========== -->
+<section id="clinics" class="py-20 max-w-7xl mx-auto px-6 md:px-8">
+  <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-12">
+    <div class="max-w-xl">
+      <p class="text-xs uppercase tracking-widest text-terracotta font-medium mb-3">Partner clinics</p>
+      <h2 class="text-3xl md:text-4xl text-forest leading-tight mb-4 font-medium">A short list of our launch partners.</h2>
+      <p class="text-muted">Each was selected through individual research on credentialing, lead-dentist track record, and case volume. We onboard slowly and refuse generic listings.</p>
+    </div>
+  </div>
 
-    <div class="price-table">
-      <div class="price-row price-head">
-        <div>Procedure</div>
-        <div>United States</div>
-        <div>Via Medivoyage</div>
-        <div>You save</div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Trust Dental Care -->
+    <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-border">
+      <div class="h-56 overflow-hidden relative bg-forest">
+        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Dental clinic interior in Tijuana." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcQAa-zwpOtm0xJHROo0PP4HDhyIqw4DQKLgE0p4IsuG6vh829sx9fgKShp9W0gJiTZ8pVp_nzymf5UAaNjJiI6L2ZiCMgM9-Z6gj9ZfOp6wdC5kSIslIpuRw4kttzGzHQXWINRR8zoMNCAmA8fJMbQs47N6XbXOHj_62Ixl9_EAYUAJQO3e1dO6dnj_CEfb-c-Ej3yIpJxu4cq13k28knO-8UYnk8tUPXmTp7ON9pf1bK28Lpy7c4tZLdYdzCCBJkMjpKnBAVH78"/>
+        <div class="absolute top-4 left-4 bg-forest text-cream px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest">Tijuana, MX</div>
       </div>
-      <div class="price-row">
-        <div class="price-procedure">Single dental implant</div>
-        <div class="price-us">$4,800</div>
-        <div class="price-mx">$1,400</div>
-        <div class="price-save">71%</div>
-      </div>
-      <div class="price-row">
-        <div class="price-procedure">Porcelain crown</div>
-        <div class="price-us">$1,500</div>
-        <div class="price-mx">$400</div>
-        <div class="price-save">73%</div>
-      </div>
-      <div class="price-row">
-        <div class="price-procedure">Porcelain veneer (each)</div>
-        <div class="price-us">$1,800</div>
-        <div class="price-mx">$550</div>
-        <div class="price-save">69%</div>
-      </div>
-      <div class="price-row">
-        <div class="price-procedure">Root canal + crown</div>
-        <div class="price-us">$3,100</div>
-        <div class="price-mx">$780</div>
-        <div class="price-save">75%</div>
-      </div>
-      <div class="price-row">
-        <div class="price-procedure">All-on-4 (per arch)</div>
-        <div class="price-us">$26,000</div>
-        <div class="price-mx">$10,500</div>
-        <div class="price-save">60%</div>
-      </div>
-      <div class="price-row">
-        <div class="price-procedure">Full-arch reconstruction (upper + lower)</div>
-        <div class="price-us">$50,000</div>
-        <div class="price-mx">$20,000</div>
-        <div class="price-save">60%</div>
+      <div class="p-6">
+        <h3 class="text-lg font-medium text-forest mb-1">Trust Dental Care</h3>
+        <p class="text-xs text-muted uppercase tracking-widest mb-3">Dr. Cirenia Aparicio Miranda</p>
+        <p class="text-sm text-muted leading-relaxed mb-4">AACD Participating Member since 2009 — rare in Mexico. Top score on the Western Regional Boards. 15 minutes from the San Ysidro crossing.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Cosmetic</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Implants</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Same-day return</span>
+        </div>
       </div>
     </div>
-    <p style="margin-top: 20px; font-size: 13px; color: rgba(247, 242, 234, 0.5);">Indicative ranges from ADA-surveyed US dental fees and current Mexico partner-clinic pricing (mid-2025). Complex cases, premium materials (zirconia vs. acrylic arches), or brand-name implants can shift the final number. Your actual quote is built from your x-rays.</p>
-  </div>
-</section>
 
-<!-- ========== WHY MEDIVOYAGE ========== -->
-<section>
-  <div class="container">
-    <div class="section-label">Why Medivoyage</div>
-    <h2>Not another lead-gen directory. <em>A real brand.</em></h2>
-    <p class="section-intro">Existing medical tourism websites are 2012-era referral marketplaces that take 20% and disappear after you book. Medivoyage stays with you — before, during, and after.</p>
+    <!-- Cancún Dental Specialists -->
+    <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-border">
+      <div class="h-56 overflow-hidden relative bg-forest">
+        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Modern clinic exterior in Cancún." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfYu93oxRlJze-raTxKhQd-K1mWUrSQB7xY-DhiPnSQ6BAnhxkrdDl_OmyhOjHPk6xzZWTwPs6x3tfoX5ldRhCDBQJLYWm4ZF0jLGWuUEF2p0BeDgd8FSAEBQNag3k6Yrdl4rget34V4Fikf0O79WFsc-CIUOkRARQjvqlwq8-BOx7DtOm35ch6VoteLp7THnWIROfpKmkjeUsHi57MgunVqKISNYb0BwGOusDEcEl9UtIBehEnXbewhcVnDkhOIuWvsqBFapd1Ls"/>
+        <div class="absolute top-4 left-4 bg-forest text-cream px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest">Cancún, MX</div>
+      </div>
+      <div class="p-6">
+        <h3 class="text-lg font-medium text-forest mb-1">Cancún Dental Specialists</h3>
+        <p class="text-xs text-muted uppercase tracking-widest mb-3">Dr. Irma Gavaldon</p>
+        <p class="text-sm text-muted leading-relaxed mb-4">Michigan dental license + University of Michigan Master's in Restorative Dentistry. Cross-border credibility our US patients ask about first.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Restorative</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Crowns &amp; bridges</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">US-licensed</span>
+        </div>
+      </div>
+    </div>
 
-    <div class="why-grid">
-      <div class="why-card">
-        <div class="why-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4.5L6 21l1.5-7.5L2 9h7z"/></svg></div>
-        <h3>Clinics we'd send our family to</h3>
-        <p>Every partner is hand-vetted: credentials verified, facility inspected, outcomes data reviewed. If we wouldn't send our own parents, you won't find them here.</p>
+    <!-- Rubio Dental Group -->
+    <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-border">
+      <div class="h-56 overflow-hidden relative bg-forest">
+        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Dental clinic exterior in Algodones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASKEvcloJRQFkiMaiWZMPvGRpMg9bOh0lH_8VJlOUditC7c3M40tJpDxwOJ3gyB7XjFzdq-b38xgphQ56sFyd8dJ1TD5vmuiqtC_PpVer_dwEIxxEizD0476YRv_5ujo_eU9Z75DGGVFBbvIf4sXdeDdRJAWC4TW1H1LItzrDxvVKiZqdm0e2Guphgrck102EF_Ky1X_zEhLw-sRpl5h3BU0iVD-1vGmP6SeaMK6OtWuXayCkqSppD9VpJUZCCAcwUugOA6gUQQZU"/>
+        <div class="absolute top-4 left-4 bg-forest text-cream px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest">Los Algodones, MX</div>
       </div>
-      <div class="why-card">
-        <div class="why-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></div>
-        <h3>One plan. One price. No surprises.</h3>
-        <p>Your quote includes everything: procedure, anesthesia, follow-ups, translation, even your Uber to the clinic. No "we found more decay" upcharges once you're there.</p>
-      </div>
-      <div class="why-card">
-        <div class="why-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 11l18-8-8 18-2-8z"/></svg></div>
-        <h3>AI-powered, human-backed</h3>
-        <p>Our AI reads your records, drafts your plan, and runs post-op voice check-ins in your language. A real care coordinator stays with your case end-to-end.</p>
-      </div>
-      <div class="why-card">
-        <div class="why-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg></div>
-        <h3>Your recovery, guaranteed</h3>
-        <p>If anything goes wrong with your treatment, we cover return flights for corrective work at no cost. We're on your side of the table, not theirs.</p>
+      <div class="p-6">
+        <h3 class="text-lg font-medium text-forest mb-1">Rubio Dental Group</h3>
+        <p class="text-xs text-muted uppercase tracking-widest mb-3">Dr. Carlos Rubio · Dr. Ernesto Montoya (ICOI)</p>
+        <p class="text-sm text-muted leading-relaxed mb-4">The only clinic in Algodones using Straumann exclusively — a single-system practice US patients respond to fast.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Implants</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Straumann</span>
+          <span class="bg-cream-warm text-forest px-2.5 py-1 rounded-full text-xs">Full-arch</span>
+        </div>
       </div>
     </div>
   </div>
-</section>
 
-<!-- ========== FAQ ========== -->
-<section class="faq-section" id="faq">
-  <div class="container">
-    <div class="section-label">Frequently asked</div>
-    <h2>Questions, <em>answered honestly.</em></h2>
-    <div class="faq-list" style="margin-top: 48px;">
-
-      <details class="faq-item"><summary class="faq-q">Is Mexican dental care actually good?</summary>
-        <div class="faq-a">Short answer: our partners are as good or better than most US dentists. Mexican dental schools are rigorous (many dentists also train in the US), our partner clinics hold international credentials (ADA affiliate, ICOI, AAAASF for surgical facilities), and they work with the same implant brands and lab materials as US practices. The cost difference is about overhead and labor, not quality. That said — quality varies clinic to clinic, which is exactly why we vet and curate.</div>
-      </details>
-
-      <details class="faq-item"><summary class="faq-q">What if something goes wrong?</summary>
-        <div class="faq-a">Two layers of protection. First: we only partner with clinics that carry malpractice insurance with international coverage and warranty their work for at least 5 years. Second: Medivoyage covers return-trip flights for corrective work if any complication arises within 12 months. We stay accountable.</div>
-      </details>
-
-      <details class="faq-item"><summary class="faq-q">Can I use my dental insurance?</summary>
-        <div class="faq-a">Some PPO plans reimburse a portion of out-of-country care — we'll help you submit. Most of our members pay out of pocket, because even uninsured the cost through Medivoyage is 60-80% less than US in-network pricing. We also offer financing through our partner.</div>
-      </details>
-
-      <details class="faq-item"><summary class="faq-q">How long do I need to stay?</summary>
-        <div class="faq-a">Depends on the procedure. Simple implants: 2-3 days. Full-mouth reconstruction: 5-7 days, sometimes with a second trip 3 months later for the permanent restorations. We plan your trip around the medical timeline, never the other way around.</div>
-      </details>
-
-      <details class="faq-item"><summary class="faq-q">What does Medivoyage charge?</summary>
-        <div class="faq-a">Our concierge is $99-$299 depending on the procedure complexity. That covers AI treatment review, clinic matching, travel coordination, translation, and 90 days of post-op follow-up. Our partner clinics pay us a small referral fee — less than what aggregators like Dayo take, because we pre-screen and deliver higher-quality patients.</div>
-      </details>
-
-      <details class="faq-item"><summary class="faq-q">Where are your partner clinics?</summary>
-        <div class="faq-a">We're launching with vetted clinics in Los Algodones (the dental tourism capital), Tijuana (most accessible from SoCal), and Cancún (ideal if you want to combine care with a vacation). Puerto Vallarta coming soon.</div>
-      </details>
-
-      <details class="faq-item"><summary class="faq-q">Is it safe to travel to Mexico for this?</summary>
-        <div class="faq-a">Our partner clinics are in specific, well-trafficked medical and tourist zones with excellent safety records. Los Algodones is literally a walk-across border town. Tijuana partner clinics are in the Zona Río / Rio Zone, not border-check-adjacent. Cancún partners are in the hotel zone. We send you detailed arrival instructions and, if you want, a local guide meets you at the airport.</div>
-      </details>
-
-    </div>
+  <div class="mt-10 text-center text-sm text-muted">
+    More partners onboarding ahead of summer 2026 launch.
   </div>
 </section>
 
 <!-- ========== FINAL CTA ========== -->
-<section class="final-cta" id="waitlist">
-  <div class="container">
-    <h2 style="max-width: 720px;">Good dental care, <em>worth the trip.</em></h2>
-    <p class="section-intro" style="margin: 0 auto;">Join the waitlist. You'll be the first to book when we launch this summer.</p>
+<section class="py-20 bg-forest text-cream relative overflow-hidden">
+  <div class="max-w-3xl mx-auto px-6 md:px-8 relative z-10 text-center">
+    <h2 class="text-3xl md:text-4xl mb-6 text-cream font-medium leading-tight">Ready when you are.</h2>
+    <p class="text-cream/80 mb-10 max-w-xl mx-auto leading-relaxed">
+      Tell us a little about your case. We'll come back within 24 hours with a first-draft
+      treatment plan, a US-vs-Mexico cost comparison, and the partner clinic we'd match you with.
+    </p>
 
-    <form class="waitlist" id="waitlistFinal" onsubmit="submitWaitlist(event, 'Final')">
-      <input type="text" name="name" placeholder="Your name" autocomplete="name" required />
-      <input type="email" name="email" placeholder="your@email.com" autocomplete="email" required />
-      <input type="tel" name="phone" placeholder="Phone (for a 10-min match call)" autocomplete="tel" required />
-      <button type="submit">Join waitlist</button>
+    <form onsubmit="submitWaitlist(event, 'Final')"
+      class="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl mx-auto bg-cream/10 backdrop-blur-xl border border-cream/20 p-6 rounded-2xl">
+      <input name="name"  type="text"  required placeholder="Your name"
+        class="px-4 py-3 rounded-lg bg-cream text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light"/>
+      <input name="email" type="email" required placeholder="you@example.com"
+        class="px-4 py-3 rounded-lg bg-cream text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light"/>
+      <input name="phone" type="tel"   required placeholder="Phone (US)" inputmode="tel"
+        class="px-4 py-3 rounded-lg bg-cream text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light"/>
+      <button type="submit"
+        class="px-6 py-3 rounded-lg bg-terracotta text-cream font-medium hover:bg-terra-deep transition-all flex items-center justify-center gap-2">
+        Join the waitlist
+        <span class="material-symbols-outlined text-base">arrow_forward</span>
+      </button>
     </form>
-    <p class="waitlist-note" style="text-align: center;">No spam. We'll write when we're ready to match you to a clinic.</p>
 
-    <div class="waitlist-success" id="successFinal">
-      You're on the list. We'll reach out with a short intake form soon — so we can match you to the right clinic when we launch.
+    <div id="successFinal" class="success-msg mt-6 max-w-md mx-auto" style="background:#FDFAF3;">
+      You're on the list. We'll reach out within 24 hours with next steps.
     </div>
+
+    <p class="mt-6 text-cream/60 text-sm">No payment required. No spam. Founding patients receive priority placement.</p>
   </div>
+  <div class="absolute -top-32 -right-32 w-96 h-96 bg-terracotta/15 rounded-full blur-3xl"></div>
 </section>
 
+</main>
+
 <!-- ========== FOOTER ========== -->
-<footer>
-  <div class="container footer-inner">
-    <div class="logo" style="font-size: 20px;">
-      <span class="logo-mark">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
-          <path d="M12 7l3 5-3 5-3-5z" fill="currentColor" stroke="none"/>
-        </svg>
-      </span>
-      Medivoyage
+<footer class="bg-forest-dark text-cream/80 border-t border-forest">
+  <div class="py-12 px-6 md:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+    <div class="space-y-3">
+      <div class="font-serif text-xl font-semibold text-cream">Medivoyage</div>
+      <p class="text-xs leading-relaxed text-cream/60">An AI concierge for cross-border dental care. Pre-launching summer 2026.</p>
     </div>
-    <div class="footer-links">
-      <a href="#how">How it works</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#faq">FAQ</a>
-      <a href="mailto:hello@medivoyage.health">Contact</a>
+    <div class="space-y-3">
+      <h5 class="text-cream text-xs uppercase tracking-widest font-medium">Site</h5>
+      <ul class="space-y-2 text-xs">
+        <li><a href="#how-it-works" class="hover:text-cream transition-colors">How it works</a></li>
+        <li><a href="#advantage" class="hover:text-cream transition-colors">Why Mexico</a></li>
+        <li><a href="#clinics" class="hover:text-cream transition-colors">Partner clinics</a></li>
+        <li><a href="#waitlist" class="hover:text-cream transition-colors">Join waitlist</a></li>
+      </ul>
     </div>
-    <div>© 2026 Medivoyage Health</div>
+    <div class="space-y-3">
+      <h5 class="text-cream text-xs uppercase tracking-widest font-medium">Destinations</h5>
+      <ul class="space-y-2 text-xs">
+        <li>Tijuana, Baja California</li>
+        <li>Los Algodones, Baja California</li>
+        <li>Cancún, Quintana Roo</li>
+        <li>Puerto Vallarta, Jalisco</li>
+      </ul>
+    </div>
+    <div class="space-y-3">
+      <h5 class="text-cream text-xs uppercase tracking-widest font-medium">Contact</h5>
+      <ul class="space-y-2 text-xs">
+        <li><a href="mailto:hello@medivoyage.health" class="hover:text-cream transition-colors">hello@medivoyage.health</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-forest py-6 px-8 text-center text-xs text-cream/60">
+    © 2026 Medivoyage Health
   </div>
 </footer>
 
 <!-- ========== FIREBASE (auto-init via Hosting reserved URLs) ========== -->
-<!-- These URLs are served automatically by Firebase Hosting and do not require a config paste. -->
 <script defer src="/__/firebase/10.12.0/firebase-app-compat.js"></script>
 <script defer src="/__/firebase/10.12.0/firebase-firestore-compat.js"></script>
 <script defer src="/__/firebase/init.js"></script>
 
 <script>
   // Waitlist submission → Firestore `leads` collection.
-  // Falls back to a console log if Firebase didn't load (e.g. previewed from file://).
   function submitWaitlist(e, id) {
     e.preventDefault();
     var form = e.target;
@@ -645,7 +450,7 @@
     name = name.trim(); email = email.trim(); phone = phone.trim();
     if (!name || !email || !phone) return;
 
-    if (btn) { btn.disabled = true; btn.textContent = 'Joining…'; }
+    if (btn) { btn.disabled = true; btn.innerHTML = 'Joining…'; }
 
     function showSuccess() {
       form.style.display = 'none';
@@ -657,7 +462,7 @@
       name: name,
       email: email,
       phone: phone,
-      source: id,                       // 'Hero' or 'Final'
+      source: id,
       page: location.pathname,
       referrer: document.referrer || '',
       userAgent: navigator.userAgent || ''
@@ -669,16 +474,14 @@
         .then(showSuccess)
         .catch(function (err) {
           console.error('Firestore write failed:', err);
-          // Still show success — the lead is captured client-side and we don't want a bad UX.
-          // Fall back to a same-origin log endpoint if you add one later.
           showSuccess();
         });
     } else {
-      // Local preview (no Firebase Hosting runtime) — just log.
       console.warn('Firebase not available on this origin — lead not persisted:', payload);
       showSuccess();
     }
   }
 </script>
+
 </body>
 </html>
