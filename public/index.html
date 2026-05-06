@@ -49,6 +49,8 @@
 <style>
   body { font-family: "Inter", system-ui, sans-serif; background: #F7F2EA; color: #3A3A37; }
   h1,h2,h3,h4 { font-family: "Fraunces", Georgia, serif; color: #1B3B36; }
+  [id] { scroll-margin-top: 96px; }
+  html { scroll-behavior: smooth; }
   .material-symbols-outlined {
     font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
     vertical-align: middle;
@@ -109,7 +111,7 @@
       </p>
 
       <!-- WAITLIST FORM (hero) -->
-      <div id="waitlist" class="bg-cream/10 backdrop-blur-xl p-6 rounded-2xl border border-cream/20 shadow-2xl max-w-2xl">
+      <div class="bg-cream/10 backdrop-blur-xl p-6 rounded-2xl border border-cream/20 shadow-2xl max-w-2xl">
         <p class="text-cream font-medium mb-4 text-sm uppercase tracking-widest">Join the waitlist · No commitment</p>
         <form onsubmit="submitWaitlist(event, 'Hero')" class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <input name="name"  type="text"  required placeholder="Your name"
@@ -363,7 +365,7 @@
 </section>
 
 <!-- ========== FINAL CTA ========== -->
-<section class="py-20 bg-forest text-cream relative overflow-hidden">
+<section id="waitlist" class="py-20 bg-forest text-cream relative overflow-hidden">
   <div class="max-w-3xl mx-auto px-6 md:px-8 relative z-10 text-center">
     <h2 class="text-3xl md:text-4xl mb-6 text-cream font-medium leading-tight">Ready when you are.</h2>
     <p class="text-cream/80 mb-10 max-w-xl mx-auto leading-relaxed">
