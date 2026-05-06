@@ -498,6 +498,49 @@
     </a>
   </div>
 
+  <!-- LEAD-CAPTURE MODAL — gates the AI run on contact-info submit -->
+  <div id="lead-modal" class="hidden fixed inset-0 z-[100] bg-forest-dark/85 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-cream-bright rounded-2xl max-w-md w-full p-6 md:p-8 shadow-2xl border border-border relative">
+      <button id="lead-modal-close" type="button" aria-label="Close" class="absolute top-3 right-3 text-muted hover:text-terracotta transition-colors p-1">
+        <span class="material-symbols-outlined text-base">close</span>
+      </button>
+
+      <div class="flex items-start gap-3 mb-5">
+        <span class="material-symbols-outlined text-terracotta text-3xl mt-0.5">contact_mail</span>
+        <div>
+          <p class="text-xs uppercase tracking-widest text-terracotta font-medium mb-1">Almost there</p>
+          <h3 class="font-serif text-xl text-forest font-medium leading-tight mb-2">Where should Dr. Rivas send the reviewed plan?</h3>
+          <p class="text-sm text-muted leading-relaxed">The AI runs in seconds. Dr. Rivas reviews and sends the validated plan within 24 hours.</p>
+        </div>
+      </div>
+
+      <form id="lead-form" class="space-y-4">
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-muted font-medium mb-2">Your name</label>
+          <input id="lead-name" name="name" type="text" required placeholder="Jane Doe"
+            class="w-full px-4 py-2.5 rounded-lg bg-white border border-border text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light text-sm"/>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-muted font-medium mb-2">Email</label>
+          <input id="lead-email" name="email" type="email" required placeholder="you@example.com"
+            class="w-full px-4 py-2.5 rounded-lg bg-white border border-border text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light text-sm"/>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-muted font-medium mb-2">Phone (US)</label>
+          <input id="lead-phone" name="phone" type="tel" required inputmode="tel" placeholder="(555) 555-5555"
+            class="w-full px-4 py-2.5 rounded-lg bg-white border border-border text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light text-sm"/>
+        </div>
+        <p id="lead-error" class="hidden text-xs text-terra-deep bg-terra-light/30 border border-terra-light rounded px-3 py-2"></p>
+        <button id="lead-submit" type="submit"
+          class="w-full px-6 py-3 rounded-xl bg-terracotta text-cream font-medium hover:bg-terra-deep transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+          <span class="material-symbols-outlined">auto_awesome</span>
+          <span id="lead-submit-label">Generate my AI briefing</span>
+        </button>
+        <p class="text-xs text-muted text-center">No payment. No commitment. Stays private — used only to send Dr. Rivas's reviewed plan.</p>
+      </form>
+    </div>
+  </div>
+
 </section>
 
 <!-- WAITLIST CTA -->
@@ -773,13 +816,134 @@
     });
   }
 
-  // ----- RUN -----
+  // ----- RUN (gated on lead capture) -----
   const runBtn = document.getElementById('run-btn');
   const runBtnLabel = document.getElementById('run-btn-label');
   const errorMsg = document.getElementById('error-msg');
   const loadingEl = document.getElementById('loading');
   const resultEl = document.getElementById('result');
   const resultOosEl = document.getElementById('result-oos');
+
+  // Lead-gate elements
+  const leadModal = document.getElementById('lead-modal');
+  const leadForm = document.getElementById('lead-form');
+  const leadNameInput = document.getElementById('lead-name');
+  const leadEmailInput = document.getElementById('lead-email');
+  const leadPhoneInput = document.getElementById('lead-phone');
+  const leadErrorEl = document.getElementById('lead-error');
+  const leadSubmitBtn = document.getElementById('lead-submit');
+  const leadSubmitLabel = document.getElementById('lead-submit-label');
+  const leadModalClose = document.getElementById('lead-modal-close');
+  const LEAD_KEY = 'medivoyage_lead_id';
+
+  function leadAlreadyCaptured() {
+    try { return !!localStorage.getItem(LEAD_KEY); } catch (e) { return false; }
+  }
+
+  function openLeadModal() {
+    leadErrorEl.classList.add('hidden');
+    leadModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => leadNameInput.focus(), 50);
+  }
+  function closeLeadModal() {
+    leadModal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+  leadModalClose.addEventListener('click', closeLeadModal);
+  leadModal.addEventListener('click', (e) => {
+    // Click on backdrop closes; click inside the card does not
+    if (e.target === leadModal) closeLeadModal();
+  });
+
+  // Captures the AI intake payload while the modal is open so we can run after submit
+  let pendingPayload = null;
+
+  function actuallyRunAI(payload) {
+    runBtn.disabled = true;
+    runBtnLabel.textContent = 'Generating…';
+    loadingEl.classList.remove('hidden');
+    startThinkingAnimation();
+
+    const t0 = performance.now();
+    fetch(WORKER_URL + '/api/intake', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+      const elapsed = Math.round((performance.now() - t0) / 100) / 10;
+      renderResult(data, elapsed);
+    }).catch((err) => {
+      console.error('AI request failed:', err);
+      errorMsg.textContent = 'Could not reach the AI service: ' + err.message;
+      errorMsg.classList.remove('hidden');
+    }).finally(() => {
+      runBtn.disabled = false;
+      runBtnLabel.textContent = 'Generate AI briefing';
+      loadingEl.classList.add('hidden');
+    });
+  }
+
+  leadForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    leadErrorEl.classList.add('hidden');
+    const name = leadNameInput.value.trim();
+    const email = leadEmailInput.value.trim();
+    const phone = leadPhoneInput.value.trim();
+    if (!name || !email || !phone) {
+      leadErrorEl.textContent = 'All three fields are required.';
+      leadErrorEl.classList.remove('hidden');
+      return;
+    }
+
+    leadSubmitBtn.disabled = true;
+    leadSubmitLabel.textContent = 'Saving…';
+
+    // Strip the giant base64 image out of intake_payload before persisting — Firestore caps docs at 1MB
+    const intakeForLead = pendingPayload ? Object.assign({}, pendingPayload) : null;
+    if (intakeForLead && intakeForLead.image_base64) {
+      intakeForLead.image_base64 = '<image-' + Math.round(intakeForLead.image_base64.length * 0.75 / 1024) + 'KB-omitted>';
+    }
+
+    const leadDoc = {
+      name, email, phone,
+      source: 'ai-demo-gate',
+      page: location.pathname,
+      referrer: document.referrer || '',
+      userAgent: navigator.userAgent || '',
+      intake_payload: intakeForLead
+    };
+
+    // Mark gate as cleared *before* Firestore — we don't want a transient
+    // network failure to re-prompt a user who already gave us their info.
+    try { localStorage.setItem(LEAD_KEY, email); } catch (e) {}
+
+    try {
+      if (window.firebase && firebase.firestore) {
+        leadDoc.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+        const ref = await firebase.firestore().collection('leads').add(leadDoc);
+        try { localStorage.setItem(LEAD_KEY, ref.id); } catch (e) {}
+      } else {
+        console.warn('Firebase not available — lead not persisted:', leadDoc);
+      }
+    } catch (err) {
+      console.error('Firestore write failed (continuing to AI run):', err);
+      // Don't block the AI — log it and proceed
+    }
+
+    closeLeadModal();
+    leadSubmitBtn.disabled = false;
+    leadSubmitLabel.textContent = 'Generate my AI briefing';
+
+    // Now actually run the AI with the saved payload
+    if (pendingPayload) {
+      const p = pendingPayload;
+      pendingPayload = null;
+      actuallyRunAI(p);
+    }
+  });
 
   runBtn.addEventListener('click', async () => {
     errorMsg.classList.add('hidden');
@@ -793,33 +957,15 @@
       return;
     }
 
-    runBtn.disabled = true;
-    runBtnLabel.textContent = 'Generating…';
-    loadingEl.classList.remove('hidden');
-    startThinkingAnimation();
-
-    const t0 = performance.now();
-    try {
-      const res = await fetch(WORKER_URL + '/api/intake', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || ('HTTP ' + res.status));
-      }
-      const elapsed = Math.round((performance.now() - t0) / 100) / 10;
-      renderResult(data, elapsed);
-    } catch (err) {
-      console.error('AI request failed:', err);
-      errorMsg.textContent = 'Could not reach the AI service: ' + err.message;
-      errorMsg.classList.remove('hidden');
-    } finally {
-      runBtn.disabled = false;
-      runBtnLabel.textContent = 'Generate AI briefing';
-      loadingEl.classList.add('hidden');
+    // First-time visitors see the lead-capture modal before the AI runs.
+    // Returning visitors (in the same browser) skip straight through.
+    if (!leadAlreadyCaptured()) {
+      pendingPayload = payload;
+      openLeadModal();
+      return;
     }
+
+    actuallyRunAI(payload);
   });
 
   // ----- RENDER -----
