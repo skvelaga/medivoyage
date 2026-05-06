@@ -1,7 +1,7 @@
 {
   "name": "Medivoyage Health",
   "short_name": "Medivoyage",
-  "description": "Vertical AI agent for cross-border dental care, US to Mexico",
+  "description": "Vertical AI agent for cross-border medical care, starting US→Mexico dental",
   "icons": [
     {
       "src": "/icon-192.png",
