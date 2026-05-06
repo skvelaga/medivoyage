@@ -79,7 +79,7 @@ const VIEWPORT = { width: 1280, height: 720 };
 
   await page.waitForTimeout(2500);
 
-  // Scroll through the result to show plan + costs
+  // Scroll through the result: AI pre-screen → Provisional plan → Cost range → Step 2 handoff
   console.log('Scroll through result...');
   await page.evaluate(() => {
     const r = document.getElementById('result');
@@ -87,19 +87,25 @@ const VIEWPORT = { width: 1280, height: 720 };
     const target = (r && !r.classList.contains('hidden')) ? r : o;
     if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
-  await page.waitForTimeout(2500);
+  await page.waitForTimeout(2800);  // Show "Step 1 · AI pre-screen" panel
 
-  await page.evaluate(() => window.scrollBy({ top: 400, behavior: 'smooth' }));
-  await page.waitForTimeout(2500);
+  await page.evaluate(() => window.scrollBy({ top: 380, behavior: 'smooth' }));
+  await page.waitForTimeout(2500);  // Provisional plan
 
-  await page.evaluate(() => window.scrollBy({ top: 400, behavior: 'smooth' }));
-  await page.waitForTimeout(2500);
+  await page.evaluate(() => window.scrollBy({ top: 380, behavior: 'smooth' }));
+  await page.waitForTimeout(2500);  // Trip plan / questions for dentist
 
-  await page.evaluate(() => window.scrollBy({ top: 400, behavior: 'smooth' }));
-  await page.waitForTimeout(2500);
+  await page.evaluate(() => window.scrollBy({ top: 380, behavior: 'smooth' }));
+  await page.waitForTimeout(2800);  // Provisional cost range
 
-  // Final hold on cost comparison
-  await page.waitForTimeout(2000);
+  await page.evaluate(() => window.scrollBy({ top: 380, behavior: 'smooth' }));
+  await page.waitForTimeout(3000);  // Step 2 · Dr. Rivas reviews handoff card (the climax)
+
+  await page.evaluate(() => window.scrollBy({ top: 250, behavior: 'smooth' }));
+  await page.waitForTimeout(2500);  // Pipeline visualization
+
+  // Final hold
+  await page.waitForTimeout(1500);
 
   console.log('Closing context to flush video...');
   await context.close();
