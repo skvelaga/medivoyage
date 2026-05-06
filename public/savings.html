@@ -107,7 +107,13 @@
         <p class="text-sm text-muted mb-6">For a ballpark only — your real plan is built case-by-case from your x-ray.</p>
 
         <div class="space-y-3">
-          <p class="text-xs uppercase tracking-widest text-muted font-medium mb-2">Procedures (approximate)</p>
+          <div class="flex items-center justify-between mb-2 gap-2 flex-wrap">
+            <p class="text-xs uppercase tracking-widest text-muted font-medium">Procedures (approximate)</p>
+            <button id="sample-toggle" type="button" onclick="toggleSample()"
+              class="text-xs px-3 py-1.5 rounded-full bg-cream-warm text-forest border border-border hover:bg-forest hover:text-cream transition-all">
+              See a sample plan
+            </button>
+          </div>
 
           <label class="proc-row flex items-center justify-between p-4 bg-cream-bright border-2 border-border rounded-xl cursor-pointer transition-all" data-id="implant" data-us="5250" data-mx="1750">
             <div class="flex items-center gap-3">
@@ -239,13 +245,24 @@
         <p class="mt-5 text-xs text-muted text-center">All figures are approximate. Final pricing is determined per case after partner-clinic review of your x-ray.</p>
       </div>
 
+      <!-- YOUR SAVINGS PLAN narrative card -->
+      <div id="plan-card" class="bg-forest text-cream rounded-2xl shadow-lg p-6 md:p-8" style="display: none;">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="material-symbols-outlined text-terra-light">description</span>
+          <h3 class="text-xl font-medium text-cream">Your savings plan</h3>
+          <span class="ml-auto text-xs uppercase tracking-widest text-cream/60">Approximate</span>
+        </div>
+        <p id="plan-narrative" class="text-cream/90 leading-relaxed text-sm md:text-base"></p>
+        <p class="mt-4 text-xs text-cream/60">Numbers rounded for readability. The real plan comes from a partner dentist after reviewing your x-ray — that's the next step below.</p>
+      </div>
+
       <!-- CTA card -->
       <div id="cta" class="bg-cream-warm border border-border p-6 md:p-8 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
-          <h3 class="text-xl font-medium text-forest mb-1">Get a real quote</h3>
-          <p class="text-sm text-muted">A partner dentist reviews your x-ray and you get a clinic-matched quote within 24 hours. The estimate above is just a ballpark.</p>
+          <h3 class="text-xl font-medium text-forest mb-1">Email me my written savings plan</h3>
+          <p class="text-sm text-muted">A partner dentist reviews your x-ray and you get a clinic-matched plan within 24 hours. The estimate above is just a ballpark — the email is the real plan.</p>
         </div>
-        <form onsubmit="submitWaitlist(event, 'Savings')" class="grid grid-cols-1 md:grid-cols-2 gap-2 w-full md:w-auto md:min-w-[420px]">
+        <form onsubmit="submitSavingsPlan(event)" class="grid grid-cols-1 md:grid-cols-2 gap-2 w-full md:w-auto md:min-w-[420px]">
           <input name="name"  type="text"  required placeholder="Your name"
             class="px-4 py-3 rounded-lg bg-white border border-border text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light"/>
           <input name="email" type="email" required placeholder="you@example.com"
@@ -254,12 +271,12 @@
             class="px-4 py-3 rounded-lg bg-white border border-border text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light md:col-span-1"/>
           <button type="submit"
             class="px-6 py-3 rounded-lg bg-terracotta hover:bg-terra-deep text-cream font-medium transition-all flex items-center justify-center gap-2 md:col-span-1">
-            Request my quote
+            Email me my plan
             <span class="material-symbols-outlined text-base">arrow_forward</span>
           </button>
         </form>
       </div>
-      <div id="successSavings" class="success-msg">You're on the list. We'll reach out within 24 hours with your custom quote.</div>
+      <div id="successSavings" class="success-msg">Got it. We'll email your written plan within 24 hours.</div>
 
     </div>
   </div>
@@ -342,6 +359,35 @@
   function roundApprox(n){ return Math.round(n / 50) * 50; }
   function fmt(n){ return '~$' + roundApprox(n).toLocaleString('en-US'); }
 
+  // Plain-English label for each procedure id, used in the narrative.
+  var PROC_LABELS = {
+    implant:    { singular: 'single-tooth implant + crown',     plural: 'single-tooth implants + crowns' },
+    veneer:     { singular: 'porcelain veneer',                 plural: 'porcelain veneers' },
+    crown:      { singular: 'zirconia crown',                   plural: 'zirconia crowns' },
+    rootcanal:  { singular: 'root canal + crown',               plural: 'root canals + crowns' },
+    cleaning:   { singular: 'cleaning + exam',                  plural: 'cleanings + exams' }
+  };
+
+  // Build the readable list of selected procedures, used in plan narrative + Firestore payload.
+  function getSelectedProcedures(){
+    var rows = document.querySelectorAll('.proc-row');
+    var out = [];
+    rows.forEach(function(row){
+      var check = row.querySelector('.proc-check');
+      var qty = parseInt(row.querySelector('.proc-qty').value || '0', 10);
+      if (check.checked && qty > 0) {
+        var id = row.dataset.id;
+        var label = PROC_LABELS[id] || { singular: id, plural: id };
+        out.push({
+          id: id,
+          quantity: qty,
+          label: qty === 1 ? label.singular : (qty + ' ' + label.plural)
+        });
+      }
+    });
+    return out;
+  }
+
   function recalc(){
     var rows = document.querySelectorAll('.proc-row');
     var us = 0, mx = 0, anySelected = false;
@@ -372,6 +418,23 @@
       document.getElementById('travel-amt').textContent = fmt(travel);
       document.getElementById('net-amt').textContent = fmt(net);
       document.getElementById('reduction-pct').textContent = pct > 0 ? ('~' + pct + '% lower (typical)') : 'Pick procedures to compare';
+
+      // Build narrative
+      var procs = getSelectedProcedures();
+      var procList = procs.map(function(p){ return p.label; });
+      var procText;
+      if (procList.length === 1)      procText = procList[0];
+      else if (procList.length === 2) procText = procList.join(' + ');
+      else                            procText = procList.slice(0, -1).join(', ') + ' + ' + procList[procList.length - 1];
+
+      var narrative = 'Your plan: ' + procText + '. ' +
+                      'US ballpark: ' + fmt(us) + '. ' +
+                      'Medivoyage ballpark: ' + fmt(mx) + '. ' +
+                      'Approximate savings: ' + fmt(savings) + '. ' +
+                      'Add ' + fmt(travel) + ' for round-trip travel, hotel, and ground transport. ' +
+                      'Net: ' + fmt(net) + ' in your pocket.';
+      document.getElementById('plan-narrative').textContent = narrative;
+      document.getElementById('plan-card').style.display = 'block';
     } else {
       document.getElementById('us-amt').textContent = '$0';
       document.getElementById('mx-amt').textContent = '$0';
@@ -379,9 +442,56 @@
       document.getElementById('travel-amt').textContent = '$0';
       document.getElementById('net-amt').textContent = '$0';
       document.getElementById('reduction-pct').textContent = 'Pick procedures to compare';
+      document.getElementById('plan-card').style.display = 'none';
     }
+    updateBars(us, mx);
+  }
 
-    // Bar heights — US always at 100% of itself, Mexico is mx/us proportion
+  // ============ Sample plan toggle ============
+  var SAMPLE_PLAN = [
+    { id: 'implant', qty: 2 },
+    { id: 'crown',   qty: 4 },
+    { id: 'cleaning', qty: 1 }
+  ];
+  var sampleActive = false;
+
+  function applyProcs(items){
+    document.querySelectorAll('.proc-row').forEach(function(row){
+      var match = items.find(function(p){ return p.id === row.dataset.id; });
+      var check = row.querySelector('.proc-check');
+      var qty   = row.querySelector('.proc-qty');
+      if (match) { check.checked = true;  qty.value = match.qty; }
+      else       { check.checked = false; qty.value = 0; }
+    });
+    recalc();
+  }
+
+  function toggleSample(){
+    var btn = document.getElementById('sample-toggle');
+    if (!sampleActive) {
+      applyProcs(SAMPLE_PLAN);
+      btn.textContent = 'Reset';
+      sampleActive = true;
+    } else {
+      applyProcs([]);
+      btn.textContent = 'See a sample plan';
+      sampleActive = false;
+    }
+  }
+
+  // If user manually changes anything, we're no longer "in sample mode"
+  document.querySelectorAll('.proc-check, .proc-qty').forEach(function(el){
+    el.addEventListener('change', function(){
+      if (sampleActive) {
+        sampleActive = false;
+        var btn = document.getElementById('sample-toggle');
+        if (btn) btn.textContent = 'See a sample plan';
+      }
+    });
+  });
+
+  // Bar heights — must be set after recalc, called from updateBars()
+  function updateBars(us, mx){
     var usBar = document.getElementById('bar-us');
     var mxBar = document.getElementById('bar-mx');
     if (us > 0) {
@@ -415,6 +525,52 @@
 
   // Initial render
   recalc();
+
+  // ============ Savings-plan submit (adds the selected-procedures payload) ============
+  function submitSavingsPlan(e) {
+    e.preventDefault();
+    var form = e.target;
+    var btn  = form.querySelector('button[type=submit]');
+    var name  = (form.querySelector('input[name=name]')  || {}).value || '';
+    var email = (form.querySelector('input[name=email]') || {}).value || '';
+    var phone = (form.querySelector('input[name=phone]') || {}).value || '';
+    name = name.trim(); email = email.trim(); phone = phone.trim();
+    if (!name || !email || !phone) return;
+    if (btn) { btn.disabled = true; btn.innerHTML = 'Sending…'; }
+
+    function showSuccess() {
+      form.style.display = 'none';
+      var success = document.getElementById('successSavings');
+      if (success) success.classList.add('active');
+    }
+
+    // We keep the Firestore payload schema fixed (8 fields). The user's selected
+    // procedures show up in the on-page narrative card; the email follow-up is
+    // where the real procedure-by-procedure plan is discussed. Encoding the
+    // selection into `source` so leads from /savings come tagged with their case
+    // shape (still under the 40-char rule limit).
+    var procedures = getSelectedProcedures();  // [{ id, quantity, label }]
+    var ABBREV = { implant:'I', veneer:'V', crown:'C', rootcanal:'R', cleaning:'CL' };
+    var procCode = procedures.map(function(p){ return (ABBREV[p.id] || p.id) + p.quantity; }).join('+');
+    var sourceTag = procCode ? ('Savings:' + procCode).substring(0, 39) : 'Savings';
+    var payload = {
+      name: name, email: email, phone: phone,
+      source: sourceTag,
+      page: location.pathname,
+      referrer: document.referrer || '',
+      userAgent: navigator.userAgent || ''
+    };
+
+    if (window.firebase && firebase.firestore) {
+      payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      firebase.firestore().collection('leads').add(payload).then(showSuccess).catch(function(err){
+        console.error('Firestore write failed:', err); showSuccess();
+      });
+    } else {
+      console.warn('Firebase not available — lead not persisted:', payload);
+      showSuccess();
+    }
+  }
 
   // ============ Waitlist submit (same as other pages) ============
   function submitWaitlist(e, id) {
