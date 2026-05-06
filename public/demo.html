@@ -99,14 +99,14 @@
         Live AI demo · powered by Claude
       </span>
       <h1 class="font-serif text-4xl md:text-6xl text-cream leading-tight mb-6 font-medium">
-        Try the AI<br/>
-        <span class="text-terra-light italic font-normal">behind Medivoyage.</span>
+        AI care coordinator.<br/>
+        <span class="text-terra-light italic font-normal">Dentists keep clinical judgment.</span>
       </h1>
       <p class="text-lg text-cream/85 mb-2 max-w-xl leading-relaxed">
-        Describe your case. Our AI reads it, drafts a treatment plan, and produces a US-vs-Mexico cost comparison in under 30 seconds.
+        Describe your case. The AI drafts a pre-screening briefing and provisional cost range in under 30 seconds. Then Dr. Rivas reviews and confirms before anything is final.
       </p>
       <p class="text-sm text-cream/65 max-w-xl">
-        v1 prototype scope: <span class="text-terra-light">single-tooth dental implant + crown only</span>. A partner dentist (Dr. Noel Rivas, DDS) reviews every plan before any patient acts on it.
+        v1 prototype scope: <span class="text-terra-light">single-tooth dental implant + crown only</span>. The AI handles intake and admin; <span class="text-terra-light">Dr. Noel Rivas, DDS</span> handles the diagnosis and final plan.
       </p>
     </div>
   </div>
@@ -129,7 +129,15 @@
       Your browser doesn't support video playback.
     </video>
   </div>
-  <p class="text-xs text-muted mt-3">Recorded against the live AI worker. The sample x-ray is a real public-domain panoramic from Wikimedia Commons (CC0).</p>
+  <div class="flex flex-wrap items-center justify-between gap-3 mt-3">
+    <p class="text-xs text-muted">Recorded against the live AI worker. The sample x-ray is a real public-domain panoramic from Wikimedia Commons (CC0).</p>
+    <a href="https://docs.google.com/videos/d/1dLYUHouq3g1OCBgfdjyc3Y2HTdoCXoN1frvbCjJLMXo/view"
+       target="_blank" rel="noopener"
+       class="text-xs text-terracotta hover:text-terra-deep font-medium flex items-center gap-1">
+      <span class="material-symbols-outlined text-sm">open_in_new</span>
+      Watch on Google Drive
+    </a>
+  </div>
 </section>
 
 <!-- DEMO APP -->
@@ -145,9 +153,9 @@
   <div class="scope-banner rounded-xl p-4 mb-8 flex items-start gap-3">
     <span class="material-symbols-outlined text-terracotta mt-0.5">info</span>
     <div class="text-sm">
-      <p class="font-medium text-forest mb-1">What this demo does — and what it doesn't</p>
+      <p class="font-medium text-forest mb-1">What the AI does — and what the dentist does</p>
       <p class="text-muted leading-relaxed">
-        It handles <strong class="text-forest">single missing tooth</strong> cases (one tooth that needs an implant + crown). For multi-tooth, full-arch, root canal, veneers, or other procedures, it'll tell you so and route you to a partner dentist. It's a real prototype — not a marketing animation.
+        The AI is a <strong class="text-forest">pre-screener, not a diagnostician</strong>. It reads your case, drafts a provisional briefing, and flags clinical considerations. Dr. Rivas at PV Smile then reviews the briefing, confirms or edits the plan, and locks pricing. v1 scope: single missing tooth (implant + crown). Other cases are flagged for direct dentist review.
       </p>
     </div>
   </div>
@@ -324,7 +332,7 @@
 
     <button id="run-btn" class="mt-6 w-full px-6 py-4 rounded-xl bg-terracotta text-cream font-medium hover:bg-terra-deep transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
       <span class="material-symbols-outlined">auto_awesome</span>
-      <span id="run-btn-label">Generate AI plan</span>
+      <span id="run-btn-label">Generate AI briefing</span>
     </button>
     <p id="error-msg" class="hidden mt-3 text-sm text-terra-deep bg-terra-light/30 border border-terra-light rounded-lg px-4 py-2"></p>
   </div>
@@ -333,7 +341,7 @@
   <div id="loading" class="hidden bg-white border border-border rounded-2xl p-8 mb-6 shadow-sm">
     <div class="flex items-center gap-3 mb-5">
       <span class="material-symbols-outlined text-terracotta">smart_toy</span>
-      <p class="text-sm text-muted">AI is analyzing your case…</p>
+      <p class="text-sm text-muted">AI is drafting a pre-screening briefing for Dr. Rivas…</p>
     </div>
     <div id="thinking-list" class="space-y-2 ai-output text-xs">
       <div class="thinking-step" data-text-step="Parsing case description" data-xray-step="Reading panoramic radiograph"><span class="text-muted">→</span> <span class="text-forest">Parsing case description</span></div>
@@ -355,7 +363,8 @@
     <!-- Findings -->
     <div class="bg-white border border-border rounded-2xl p-6 md:p-8 mb-5 shadow-sm">
       <div class="flex items-center gap-3 mb-4 flex-wrap">
-        <span class="px-3 py-1 rounded-full text-xs font-medium uppercase tracking-widest bg-forest text-cream">AI findings</span>
+        <span class="px-3 py-1 rounded-full text-xs font-medium uppercase tracking-widest bg-forest text-cream">Step 1 · AI pre-screen</span>
+        <span class="px-3 py-1 rounded-full text-xs font-medium uppercase tracking-widest bg-cream-warm text-forest border border-border">Pending dentist review</span>
         <span id="result-time" class="text-xs text-muted ml-auto"></span>
       </div>
       <h3 id="result-title" class="font-serif text-2xl text-forest mb-3 font-medium"></h3>
@@ -371,11 +380,11 @@
       </details>
     </div>
 
-    <!-- Treatment plan -->
+    <!-- Provisional plan -->
     <div class="bg-white border border-border rounded-2xl p-6 md:p-8 mb-5 shadow-sm">
       <div class="flex items-center gap-3 mb-4">
         <span class="material-symbols-outlined text-terracotta">description</span>
-        <p class="text-xs uppercase tracking-widest text-terracotta font-medium">Treatment plan</p>
+        <p class="text-xs uppercase tracking-widest text-terracotta font-medium">Provisional plan · pending Dr. Rivas review</p>
       </div>
       <p id="plan-narrative" class="text-forest leading-relaxed mb-6"></p>
 
@@ -391,7 +400,7 @@
     <div class="bg-white border border-border rounded-2xl p-6 md:p-8 mb-5 shadow-sm">
       <div class="flex items-center gap-3 mb-4">
         <span class="material-symbols-outlined text-terracotta">compare_arrows</span>
-        <p class="text-xs uppercase tracking-widest text-terracotta font-medium">Cost comparison</p>
+        <p class="text-xs uppercase tracking-widest text-terracotta font-medium">Provisional cost range · finalized after dentist review</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
         <div class="p-5 rounded-xl bg-cream-warm">
@@ -412,10 +421,61 @@
       <p id="cost-disclaimer" class="text-xs text-muted mt-4 italic"></p>
     </div>
 
+    <!-- HANDOFF CARD: Step 2 · Dentist review -->
+    <div class="bg-forest-dark text-cream rounded-2xl p-6 md:p-8 mb-5 shadow-lg border border-forest">
+      <div class="flex items-center gap-3 mb-4 flex-wrap">
+        <span class="px-3 py-1 rounded-full text-xs font-medium uppercase tracking-widest bg-terracotta text-cream">Step 2 · Dentist review</span>
+        <span class="text-xs text-cream/60 ml-auto">Typical turnaround: under 24 hours</span>
+      </div>
+      <h3 class="font-serif text-2xl md:text-3xl text-cream mb-3 font-medium">Dr. Rivas reviews and approves before you see anything final.</h3>
+      <p class="text-cream/80 leading-relaxed mb-6">
+        This briefing now lands in the partner-dentist dashboard at PV Smile. Dr. Rivas confirms or edits the findings, requests imaging if needed, and locks in pricing based on the actual exam. The AI is the pre-screener. The dentist is the diagnostician.
+      </p>
+
+      <!-- Pipeline visualization -->
+      <div class="grid grid-cols-1 md:grid-cols-7 items-center gap-3 mb-6">
+        <div class="md:col-span-2 bg-cream/10 rounded-lg p-3 text-center">
+          <span class="material-symbols-outlined text-terra-light text-xl mb-1">person</span>
+          <p class="text-xs uppercase tracking-widest text-terra-light font-medium">You</p>
+          <p class="text-sm text-cream mt-1">Submit your case</p>
+        </div>
+        <div class="md:col-span-1 hidden md:flex justify-center text-terra-light">
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </div>
+        <div class="md:col-span-2 bg-cream/10 rounded-lg p-3 text-center">
+          <span class="material-symbols-outlined text-terra-light text-xl mb-1">smart_toy</span>
+          <p class="text-xs uppercase tracking-widest text-terra-light font-medium">AI briefing</p>
+          <p class="text-sm text-cream mt-1">Drafts the pre-screen</p>
+        </div>
+        <div class="md:col-span-1 hidden md:flex justify-center text-terra-light">
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </div>
+        <div class="md:col-span-1 bg-terracotta/30 border border-terracotta rounded-lg p-3 text-center">
+          <span class="material-symbols-outlined text-cream text-xl mb-1">verified_user</span>
+          <p class="text-xs uppercase tracking-widest text-cream font-medium">Dr. Rivas</p>
+          <p class="text-sm text-cream mt-1">Reviews · approves</p>
+        </div>
+      </div>
+
+      <details class="bg-cream/5 border border-cream/10 rounded-lg">
+        <summary class="cursor-pointer px-4 py-3 text-sm text-cream/90 font-medium flex items-center gap-2 hover:bg-cream/5 rounded-lg">
+          <span class="material-symbols-outlined text-base text-terra-light">description</span>
+          What Dr. Rivas sees in the dentist dashboard
+        </summary>
+        <ul class="px-5 py-3 text-sm text-cream/75 space-y-2 list-disc pl-8">
+          <li>The full AI pre-screen findings (visible above)</li>
+          <li>Your uploaded x-ray or case details, original quality</li>
+          <li>The AI's bone-graft determination — flagged for confirmation via CBCT</li>
+          <li>Specific clinical questions the AI surfaced for review</li>
+          <li>One-click controls to <strong class="text-cream">approve</strong>, <strong class="text-cream">edit</strong>, or <strong class="text-cream">request imaging</strong></li>
+        </ul>
+      </details>
+    </div>
+
     <!-- CTA -->
     <div class="bg-forest text-cream rounded-2xl p-8 text-center">
       <h3 class="font-serif text-2xl mb-2 text-cream">Ready for the real plan?</h3>
-      <p class="text-cream/80 text-sm mb-5">Dr. Rivas reviews your case, requests a panoramic x-ray if needed, and sends a personalized plan with locked-in pricing within 24 hours.</p>
+      <p class="text-cream/80 text-sm mb-5">Join the waitlist. Dr. Rivas reviews your case, requests imaging if needed, and sends a final plan with locked-in pricing within 24 hours.</p>
       <a href="#cta" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-terracotta hover:bg-terra-deep text-cream font-medium transition-all">
         Get matched to PV Smile
         <span class="material-symbols-outlined text-base">arrow_forward</span>
