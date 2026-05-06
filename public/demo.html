@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AI demo — Medivoyage Health</title>
-<meta name="description" content="See how the Medivoyage AI reads a panoramic x-ray, generates a treatment plan, and produces a US-vs-Mexico cost comparison — in seconds." />
+<meta name="description" content="Live AI demo: describe a single-tooth dental implant case in plain English or with a quick form. Claude reads your case, drafts a treatment plan, and gives you a US-vs-Mexico cost comparison in seconds." />
 
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
@@ -47,18 +47,25 @@
   .hero-overlay { background: linear-gradient(135deg, rgba(19,42,38,0.92) 0%, rgba(27,59,54,0.78) 60%, rgba(27,59,54,0.55) 100%); }
   .success-msg { display:none; padding:14px 20px; background:#FDFAF3; border-radius:12px; border:1px solid #E4DCCC; color:#1B3B36; }
   .success-msg.active { display:block; }
-  .ai-pill { background:#1B3B36; color:#F7F2EA; }
-  .xray-frame {
-    background: radial-gradient(ellipse at center, #2a2a2a 0%, #0a0a0a 100%);
-    aspect-ratio: 16 / 9;
-    position: relative;
-  }
-  .xray-svg { width:100%; height:100%; }
+
+  /* Tab styling */
+  .mode-tab.active { background:#1B3B36; color:#F7F2EA; }
+
+  /* Loader animation */
+  @keyframes pulse-soft { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .pulse-dot { animation: pulse-soft 1.4s ease-in-out infinite; }
+  .pulse-dot.d2 { animation-delay: 0.2s; }
+  .pulse-dot.d3 { animation-delay: 0.4s; }
+
   .ai-output { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 13px; line-height: 1.7; }
   .ai-output .key { color: #C86B4A; }
   .ai-output .val { color: #1B3B36; }
   .ai-output .comment { color: #6B6963; }
-  .ai-output .strong { color: #1B3B36; font-weight: 500; }
+
+  .thinking-step { opacity: 0; transform: translateY(6px); transition: all 0.4s ease; }
+  .thinking-step.shown { opacity: 1; transform: translateY(0); }
+
+  .scope-banner { background: linear-gradient(135deg, #FDFAF3 0%, #F7F2EA 100%); border-left: 3px solid #C86B4A; }
 </style>
 </head>
 <body class="bg-cream text-charcoal">
@@ -80,7 +87,7 @@
 <main class="pt-20">
 
 <!-- HERO -->
-<section class="relative overflow-hidden bg-forest text-cream py-20">
+<section class="relative overflow-hidden bg-forest text-cream py-16">
   <div class="absolute inset-0 z-0 opacity-30">
     <img class="w-full h-full object-cover" alt="Modern dental clinic with imaging equipment." src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=1600&q=80"/>
     <div class="absolute inset-0 hero-overlay"></div>
@@ -89,277 +96,348 @@
     <div class="max-w-3xl">
       <span class="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-cream/15 border border-cream/20 backdrop-blur text-cream text-xs uppercase tracking-widest font-medium mb-6">
         <span class="material-symbols-outlined text-base" style="font-variation-settings:'FILL' 1;">smart_toy</span>
-        AI demo
+        Live AI demo · powered by Claude
       </span>
       <h1 class="font-serif text-4xl md:text-6xl text-cream leading-tight mb-6 font-medium">
-        See the AI<br/>
+        Try the AI<br/>
         <span class="text-terra-light italic font-normal">behind Medivoyage.</span>
       </h1>
-      <p class="text-lg text-cream/85 mb-8 max-w-xl leading-relaxed">
-        Our AI reads a panoramic dental x-ray, identifies issues, drafts a
-        treatment plan, and generates a US-vs-Mexico cost comparison — in under
-        30 seconds. Below: two real-shape sample analyses to show you what the
-        AI produces. A partner dentist reviews everything before any real plan
-        reaches a patient.
+      <p class="text-lg text-cream/85 mb-2 max-w-xl leading-relaxed">
+        Describe your case. Our AI reads it, drafts a treatment plan, and produces a US-vs-Mexico cost comparison in under 30 seconds.
       </p>
-      <div class="flex flex-col sm:flex-row gap-3">
-        <a href="#cases" class="px-6 py-3 rounded-lg bg-terracotta text-cream font-medium hover:bg-terra-deep transition-all flex items-center justify-center gap-2">
-          See sample analyses
-          <span class="material-symbols-outlined text-base">arrow_downward</span>
-        </a>
-        <a href="#cta" class="px-6 py-3 rounded-lg bg-cream/10 backdrop-blur text-cream border border-cream/20 hover:bg-cream/15 transition-all flex items-center justify-center gap-2">
-          Join the waitlist
-          <span class="material-symbols-outlined text-base">arrow_forward</span>
-        </a>
-      </div>
+      <p class="text-sm text-cream/65 max-w-xl">
+        v1 prototype scope: <span class="text-terra-light">single-tooth dental implant + crown only</span>. A partner dentist (Dr. Noel Rivas, DDS) reviews every plan before any patient acts on it.
+      </p>
     </div>
   </div>
 </section>
 
-<!-- HOW THE AI WORKS -->
-<section class="py-16 max-w-7xl mx-auto px-6 md:px-8">
-  <div class="text-center mb-12 max-w-2xl mx-auto">
-    <p class="text-xs uppercase tracking-widest text-terracotta font-medium mb-3">Under the hood</p>
-    <h2 class="text-3xl md:text-4xl text-forest leading-tight font-medium">Three steps. About thirty seconds.</h2>
+<!-- VIDEO WALKTHROUGH -->
+<section class="py-10 max-w-5xl mx-auto px-6 md:px-8">
+  <div class="flex items-center gap-3 mb-4">
+    <span class="material-symbols-outlined text-terracotta">play_circle</span>
+    <p class="text-xs uppercase tracking-widest text-terracotta font-medium">40-second walkthrough</p>
   </div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="bg-white rounded-2xl border border-border p-6">
-      <div class="flex items-center gap-3 mb-3">
-        <span class="material-symbols-outlined text-terracotta">visibility</span>
-        <p class="text-xs uppercase tracking-widest text-terracotta font-medium">Step 1</p>
-      </div>
-      <h3 class="text-lg font-medium text-forest mb-2">Vision model reads the x-ray</h3>
-      <p class="text-sm text-muted leading-relaxed">A multimodal model identifies missing teeth, caries, restorations, bone-density signals, and any structural concerns visible in the panoramic image.</p>
+  <div class="relative bg-forest-dark rounded-2xl overflow-hidden shadow-lg border border-border">
+    <video
+      controls
+      preload="metadata"
+      poster="/demo-assets/walkthrough-poster.jpg"
+      class="w-full aspect-video block"
+      playsinline>
+      <source src="/demo-assets/walkthrough.mp4" type="video/mp4">
+      Your browser doesn't support video playback.
+    </video>
+  </div>
+  <p class="text-xs text-muted mt-3">Recorded against the live AI worker. The sample x-ray is a real public-domain panoramic from Wikimedia Commons (CC0).</p>
+</section>
+
+<!-- DEMO APP -->
+<section id="demo" class="py-6 max-w-5xl mx-auto px-6 md:px-8">
+
+  <!-- Try it yourself header -->
+  <div class="flex items-center gap-3 mb-4">
+    <span class="material-symbols-outlined text-terracotta">smart_toy</span>
+    <p class="text-xs uppercase tracking-widest text-terracotta font-medium">Try it yourself</p>
+  </div>
+
+  <!-- Scope banner -->
+  <div class="scope-banner rounded-xl p-4 mb-8 flex items-start gap-3">
+    <span class="material-symbols-outlined text-terracotta mt-0.5">info</span>
+    <div class="text-sm">
+      <p class="font-medium text-forest mb-1">What this demo does — and what it doesn't</p>
+      <p class="text-muted leading-relaxed">
+        It handles <strong class="text-forest">single missing tooth</strong> cases (one tooth that needs an implant + crown). For multi-tooth, full-arch, root canal, veneers, or other procedures, it'll tell you so and route you to a partner dentist. It's a real prototype — not a marketing animation.
+      </p>
     </div>
-    <div class="bg-white rounded-2xl border border-border p-6">
-      <div class="flex items-center gap-3 mb-3">
+  </div>
+
+  <!-- Mode tabs -->
+  <div class="flex flex-wrap gap-2 mb-6 bg-white border border-border rounded-xl p-1.5 max-w-2xl">
+    <button id="tab-text" class="mode-tab active flex-1 min-w-[140px] py-2.5 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2">
+      <span class="material-symbols-outlined text-base">edit_note</span>
+      Describe in words
+    </button>
+    <button id="tab-form" class="mode-tab flex-1 min-w-[140px] py-2.5 px-4 rounded-lg text-sm font-medium text-muted transition-all flex items-center justify-center gap-2">
+      <span class="material-symbols-outlined text-base">tune</span>
+      Quick form
+    </button>
+    <button id="tab-xray" class="mode-tab flex-1 min-w-[140px] py-2.5 px-4 rounded-lg text-sm font-medium text-muted transition-all flex items-center justify-center gap-2">
+      <span class="material-symbols-outlined text-base">imagesearch_roller</span>
+      X-ray analysis
+    </button>
+  </div>
+
+  <!-- INPUT CARD -->
+  <div class="bg-white border border-border rounded-2xl p-6 md:p-8 mb-6 shadow-sm">
+
+    <!-- TEXT MODE -->
+    <div id="mode-text">
+      <label class="block text-xs uppercase tracking-widest text-muted font-medium mb-3">Tell us about your case</label>
+      <textarea id="text-input" rows="5" maxlength="2000"
+        placeholder="Example: I lost a back molar on my lower left side about 8 months ago. I'm 42, healthy, no diabetes, don't smoke. Looking to get an implant put in."
+        class="w-full px-4 py-3 rounded-lg bg-cream-bright border border-border text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light text-sm leading-relaxed resize-y"></textarea>
+      <div class="flex items-center justify-between mt-2">
+        <p class="text-xs text-muted">Plain English. The AI handles parsing.</p>
+        <p id="char-count" class="text-xs text-muted">0 / 2000</p>
+      </div>
+      <div class="flex flex-wrap gap-2 mt-4">
+        <button class="example-btn text-xs px-3 py-1.5 bg-cream-warm text-forest rounded-full hover:bg-cream transition-all border border-border" data-example="I lost my lower-left back molar about 8 months ago. I'm 42, healthy, non-smoker, no diabetes. The area healed fine. Want to know if I'm a candidate for an implant.">Healthy · 8 months</button>
+        <button class="example-btn text-xs px-3 py-1.5 bg-cream-warm text-forest rounded-full hover:bg-cream transition-all border border-border" data-example="Upper-right molar broken and extracted 2 years ago. I'm 58, smoker (half pack a day), no diabetes. Self-rated dental health is fair. No pain currently. Want to replace it with an implant.">Older · smoker · upper</button>
+        <button class="example-btn text-xs px-3 py-1.5 bg-cream-warm text-forest rounded-full hover:bg-cream transition-all border border-border" data-example="I need to replace all my upper teeth with implants. I have severe gum disease and have been wearing dentures for 5 years.">Out of scope (full arch)</button>
+      </div>
+    </div>
+
+    <!-- FORM MODE -->
+    <div id="mode-form" class="hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-muted font-medium mb-2">Which tooth is missing?</label>
+          <select id="form-tooth" class="w-full px-4 py-3 rounded-lg bg-cream-bright border border-border text-forest outline-none focus:ring-2 focus:ring-terra-light text-sm">
+            <option value="">Select location…</option>
+            <optgroup label="Upper jaw (right side)">
+              <option value="upper-right-third-molar|1">Upper right wisdom tooth (#1)</option>
+              <option value="upper-right-second-molar|2">Upper right second molar (#2)</option>
+              <option value="upper-right-first-molar|3">Upper right first molar (#3)</option>
+              <option value="upper-right-second-premolar|4">Upper right second premolar (#4)</option>
+              <option value="upper-right-first-premolar|5">Upper right first premolar (#5)</option>
+              <option value="upper-right-canine|6">Upper right canine (#6)</option>
+              <option value="upper-right-lateral-incisor|7">Upper right lateral incisor (#7)</option>
+              <option value="upper-right-central-incisor|8">Upper right central incisor (#8)</option>
+            </optgroup>
+            <optgroup label="Upper jaw (left side)">
+              <option value="upper-left-central-incisor|9">Upper left central incisor (#9)</option>
+              <option value="upper-left-lateral-incisor|10">Upper left lateral incisor (#10)</option>
+              <option value="upper-left-canine|11">Upper left canine (#11)</option>
+              <option value="upper-left-first-premolar|12">Upper left first premolar (#12)</option>
+              <option value="upper-left-second-premolar|13">Upper left second premolar (#13)</option>
+              <option value="upper-left-first-molar|14">Upper left first molar (#14)</option>
+              <option value="upper-left-second-molar|15">Upper left second molar (#15)</option>
+              <option value="upper-left-third-molar|16">Upper left wisdom tooth (#16)</option>
+            </optgroup>
+            <optgroup label="Lower jaw (left side)">
+              <option value="lower-left-third-molar|17">Lower left wisdom tooth (#17)</option>
+              <option value="lower-left-second-molar|18">Lower left second molar (#18)</option>
+              <option value="lower-left-first-molar|19">Lower left first molar (#19)</option>
+              <option value="lower-left-second-premolar|20">Lower left second premolar (#20)</option>
+              <option value="lower-left-first-premolar|21">Lower left first premolar (#21)</option>
+              <option value="lower-left-canine|22">Lower left canine (#22)</option>
+              <option value="lower-left-lateral-incisor|23">Lower left lateral incisor (#23)</option>
+              <option value="lower-left-central-incisor|24">Lower left central incisor (#24)</option>
+            </optgroup>
+            <optgroup label="Lower jaw (right side)">
+              <option value="lower-right-central-incisor|25">Lower right central incisor (#25)</option>
+              <option value="lower-right-lateral-incisor|26">Lower right lateral incisor (#26)</option>
+              <option value="lower-right-canine|27">Lower right canine (#27)</option>
+              <option value="lower-right-first-premolar|28">Lower right first premolar (#28)</option>
+              <option value="lower-right-second-premolar|29">Lower right second premolar (#29)</option>
+              <option value="lower-right-first-molar|30">Lower right first molar (#30)</option>
+              <option value="lower-right-second-molar|31">Lower right second molar (#31)</option>
+              <option value="lower-right-third-molar|32">Lower right wisdom tooth (#32)</option>
+            </optgroup>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-muted font-medium mb-2">How long has it been missing?</label>
+          <select id="form-duration" class="w-full px-4 py-3 rounded-lg bg-cream-bright border border-border text-forest outline-none focus:ring-2 focus:ring-terra-light text-sm">
+            <option value="">Select…</option>
+            <option value="1">Less than 3 months</option>
+            <option value="6">3–12 months</option>
+            <option value="18">1–2 years</option>
+            <option value="36">2–5 years</option>
+            <option value="72">5+ years</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-muted font-medium mb-2">Your age</label>
+          <input id="form-age" type="number" min="16" max="100" placeholder="42"
+            class="w-full px-4 py-3 rounded-lg bg-cream-bright border border-border text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light text-sm"/>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-muted font-medium mb-2">Self-rated dental health</label>
+          <select id="form-health" class="w-full px-4 py-3 rounded-lg bg-cream-bright border border-border text-forest outline-none focus:ring-2 focus:ring-terra-light text-sm">
+            <option value="">Select…</option>
+            <option value="good">Good</option>
+            <option value="fair">Fair</option>
+            <option value="poor">Poor</option>
+          </select>
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-xs uppercase tracking-widest text-muted font-medium mb-3">Health flags</label>
+          <div class="flex flex-wrap gap-3">
+            <label class="flex items-center gap-2 px-4 py-2.5 bg-cream-bright border border-border rounded-lg cursor-pointer hover:bg-cream-warm transition-all">
+              <input type="checkbox" id="form-pain" class="accent-terracotta"/>
+              <span class="text-sm text-forest">Currently in pain</span>
+            </label>
+            <label class="flex items-center gap-2 px-4 py-2.5 bg-cream-bright border border-border rounded-lg cursor-pointer hover:bg-cream-warm transition-all">
+              <input type="checkbox" id="form-smoker" class="accent-terracotta"/>
+              <span class="text-sm text-forest">Smoker</span>
+            </label>
+            <label class="flex items-center gap-2 px-4 py-2.5 bg-cream-bright border border-border rounded-lg cursor-pointer hover:bg-cream-warm transition-all">
+              <input type="checkbox" id="form-diabetes" class="accent-terracotta"/>
+              <span class="text-sm text-forest">Diabetes</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- X-RAY MODE -->
+    <div id="mode-xray" class="hidden">
+      <label class="block text-xs uppercase tracking-widest text-muted font-medium mb-3">Upload a panoramic dental x-ray</label>
+
+      <!-- Sample x-ray button + upload -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+        <button id="use-sample-btn" type="button" class="px-4 py-3 rounded-lg bg-cream-warm border border-border text-forest text-sm font-medium hover:bg-cream transition-all flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-base">imagesearch_roller</span>
+          Use our sample x-ray
+        </button>
+        <label class="px-4 py-3 rounded-lg bg-forest text-cream text-sm font-medium hover:bg-forest-dark transition-all flex items-center justify-center gap-2 cursor-pointer">
+          <span class="material-symbols-outlined text-base">upload</span>
+          Upload your own (PNG / JPG)
+          <input id="xray-file-input" type="file" accept="image/png,image/jpeg,image/webp" class="hidden"/>
+        </label>
+      </div>
+      <p class="text-xs text-muted mb-4">Max 5MB. Image stays on the worker for the analysis only — never stored, never shown to anyone outside Medivoyage.</p>
+
+      <!-- Preview -->
+      <div id="xray-preview-wrap" class="hidden bg-cream-bright border border-border rounded-xl p-3 mb-4">
+        <div class="flex items-start gap-3">
+          <img id="xray-preview" class="w-32 h-20 object-cover rounded-lg border border-border" alt="X-ray preview"/>
+          <div class="flex-1 min-w-0">
+            <p id="xray-filename" class="text-sm text-forest font-medium truncate"></p>
+            <p id="xray-meta" class="text-xs text-muted"></p>
+            <p id="xray-source" class="text-xs text-muted italic mt-1"></p>
+          </div>
+          <button id="xray-clear-btn" type="button" class="text-muted hover:text-terracotta transition-colors" aria-label="Remove x-ray">
+            <span class="material-symbols-outlined text-base">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Optional context -->
+      <label class="block text-xs uppercase tracking-widest text-muted font-medium mb-2">Add context (optional)</label>
+      <textarea id="xray-context" rows="2" maxlength="500"
+        placeholder="E.g. 'Tooth has been missing about 2 years. I'm 45 and don't smoke.'"
+        class="w-full px-4 py-3 rounded-lg bg-cream-bright border border-border text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light text-sm resize-y"></textarea>
+    </div>
+
+    <button id="run-btn" class="mt-6 w-full px-6 py-4 rounded-xl bg-terracotta text-cream font-medium hover:bg-terra-deep transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+      <span class="material-symbols-outlined">auto_awesome</span>
+      <span id="run-btn-label">Generate AI plan</span>
+    </button>
+    <p id="error-msg" class="hidden mt-3 text-sm text-terra-deep bg-terra-light/30 border border-terra-light rounded-lg px-4 py-2"></p>
+  </div>
+
+  <!-- LOADING STATE -->
+  <div id="loading" class="hidden bg-white border border-border rounded-2xl p-8 mb-6 shadow-sm">
+    <div class="flex items-center gap-3 mb-5">
+      <span class="material-symbols-outlined text-terracotta">smart_toy</span>
+      <p class="text-sm text-muted">AI is analyzing your case…</p>
+    </div>
+    <div id="thinking-list" class="space-y-2 ai-output text-xs">
+      <div class="thinking-step" data-text-step="Parsing case description" data-xray-step="Reading panoramic radiograph"><span class="text-muted">→</span> <span class="text-forest">Parsing case description</span></div>
+      <div class="thinking-step" data-text-step="Identifying tooth location and patient flags" data-xray-step="Identifying missing teeth and bone density"><span class="text-muted">→</span> <span class="text-forest">Identifying tooth location and patient flags</span></div>
+      <div class="thinking-step" data-text-step="Checking single-tooth implant candidacy" data-xray-step="Checking single-tooth implant candidacy"><span class="text-muted">→</span> <span class="text-forest">Checking single-tooth implant candidacy</span></div>
+      <div class="thinking-step" data-text-step="Drafting trip plan and timeline" data-xray-step="Drafting trip plan and timeline"><span class="text-muted">→</span> <span class="text-forest">Drafting trip plan and timeline</span></div>
+      <div class="thinking-step" data-text-step="Pulling rate card for cost comparison" data-xray-step="Pulling rate card for cost comparison"><span class="text-muted">→</span> <span class="text-forest">Pulling rate card for cost comparison</span></div>
+    </div>
+    <div class="mt-5 flex items-center gap-1.5">
+      <span class="w-2 h-2 rounded-full bg-terracotta pulse-dot"></span>
+      <span class="w-2 h-2 rounded-full bg-terracotta pulse-dot d2"></span>
+      <span class="w-2 h-2 rounded-full bg-terracotta pulse-dot d3"></span>
+    </div>
+  </div>
+
+  <!-- RESULT — IN SCOPE -->
+  <div id="result" class="hidden">
+
+    <!-- Findings -->
+    <div class="bg-white border border-border rounded-2xl p-6 md:p-8 mb-5 shadow-sm">
+      <div class="flex items-center gap-3 mb-4 flex-wrap">
+        <span class="px-3 py-1 rounded-full text-xs font-medium uppercase tracking-widest bg-forest text-cream">AI findings</span>
+        <span id="result-time" class="text-xs text-muted ml-auto"></span>
+      </div>
+      <h3 id="result-title" class="font-serif text-2xl text-forest mb-3 font-medium"></h3>
+      <p id="result-summary" class="text-muted leading-relaxed mb-5"></p>
+      <div id="result-flags" class="flex flex-wrap gap-2 mb-5"></div>
+
+      <details class="bg-cream-bright border border-border rounded-xl">
+        <summary class="cursor-pointer px-4 py-3 text-sm text-forest font-medium hover:bg-cream-warm rounded-xl flex items-center gap-2">
+          <span class="material-symbols-outlined text-base">code</span>
+          Show structured AI output
+        </summary>
+        <pre id="result-json" class="ai-output px-4 pb-4 overflow-x-auto text-[11px]"></pre>
+      </details>
+    </div>
+
+    <!-- Treatment plan -->
+    <div class="bg-white border border-border rounded-2xl p-6 md:p-8 mb-5 shadow-sm">
+      <div class="flex items-center gap-3 mb-4">
         <span class="material-symbols-outlined text-terracotta">description</span>
-        <p class="text-xs uppercase tracking-widest text-terracotta font-medium">Step 2</p>
+        <p class="text-xs uppercase tracking-widest text-terracotta font-medium">Treatment plan</p>
       </div>
-      <h3 class="text-lg font-medium text-forest mb-2">Treatment plan generated</h3>
-      <p class="text-sm text-muted leading-relaxed">The findings get mapped to standard procedure codes (implant, crown, root canal, etc.) and ordered by clinical priority and dependency.</p>
+      <p id="plan-narrative" class="text-forest leading-relaxed mb-6"></p>
+
+      <div id="plan-trips" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"></div>
+
+      <div class="text-xs text-muted bg-cream-bright border border-border rounded-lg p-4">
+        <p class="font-medium text-forest mb-1">Questions Dr. Rivas will clarify on review:</p>
+        <ul id="plan-questions" class="list-disc pl-5 space-y-1"></ul>
+      </div>
     </div>
-    <div class="bg-white rounded-2xl border border-border p-6">
-      <div class="flex items-center gap-3 mb-3">
+
+    <!-- Cost comparison -->
+    <div class="bg-white border border-border rounded-2xl p-6 md:p-8 mb-5 shadow-sm">
+      <div class="flex items-center gap-3 mb-4">
         <span class="material-symbols-outlined text-terracotta">compare_arrows</span>
-        <p class="text-xs uppercase tracking-widest text-terracotta font-medium">Step 3</p>
+        <p class="text-xs uppercase tracking-widest text-terracotta font-medium">Cost comparison</p>
       </div>
-      <h3 class="text-lg font-medium text-forest mb-2">Cost comparison rendered</h3>
-      <p class="text-sm text-muted leading-relaxed">US averages (CareCredit/ADA fee surveys) vs. our partner-clinic rate cards in Tijuana, Algodones, Cancún, Vallarta. Always shown as a range.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+        <div class="p-5 rounded-xl bg-cream-warm">
+          <p class="text-xs uppercase tracking-widest text-muted mb-1">US ballpark</p>
+          <p id="cost-us" class="font-serif text-2xl text-forest mb-1"></p>
+          <p id="cost-us-detail" class="text-xs text-muted"></p>
+        </div>
+        <div class="p-5 rounded-xl bg-forest text-cream">
+          <p class="text-xs uppercase tracking-widest text-cream/70 mb-1">Medivoyage / PV Smile (incl. travel)</p>
+          <p id="cost-mx" class="font-serif text-2xl text-terra-light mb-1"></p>
+          <p id="cost-mx-detail" class="text-xs text-cream/70"></p>
+        </div>
+      </div>
+      <div class="bg-terracotta/10 border border-terracotta/30 rounded-xl p-4 text-center">
+        <p class="text-xs uppercase tracking-widest text-terracotta font-medium mb-1">You save</p>
+        <p id="cost-savings" class="font-serif text-3xl text-terracotta font-medium"></p>
+      </div>
+      <p id="cost-disclaimer" class="text-xs text-muted mt-4 italic"></p>
     </div>
-  </div>
-  <div class="mt-8 bg-cream-warm border border-border rounded-xl p-5 text-center">
-    <p class="text-sm text-muted">
-      <span class="material-symbols-outlined text-terracotta text-base align-middle mr-1">info</span>
-      Every AI plan is reviewed by a partner dentist before it reaches a patient. AI drafts; humans clinically validate.
-    </p>
-  </div>
-</section>
 
-<!-- SAMPLE CASES -->
-<section id="cases" class="py-16 max-w-7xl mx-auto px-6 md:px-8">
-  <div class="mb-10 max-w-2xl">
-    <p class="text-xs uppercase tracking-widest text-terracotta font-medium mb-3">Sample analyses</p>
-    <h2 class="text-3xl md:text-4xl text-forest leading-tight mb-4 font-medium">Two real-shape cases.</h2>
-    <p class="text-muted">Synthetic patients with realistic findings to show what the AI produces. Procedure codes, ranges, and disclaimers all match what a real patient sees.</p>
-  </div>
-
-  <!-- CASE 1 -->
-  <div class="bg-white rounded-3xl border border-border shadow-sm overflow-hidden mb-8">
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-0">
-      <!-- X-ray panel -->
-      <div class="md:col-span-5 xray-frame">
-        <svg class="xray-svg" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" aria-label="Stylized panoramic x-ray, sample case 1">
-          <defs>
-            <radialGradient id="rg1" cx="50%" cy="50%" r="60%">
-              <stop offset="0%" stop-color="#444"/>
-              <stop offset="100%" stop-color="#0a0a0a"/>
-            </radialGradient>
-          </defs>
-          <rect width="320" height="180" fill="url(#rg1)"/>
-          <!-- Upper arch (mandible curve) -->
-          <path d="M30 95 Q160 30 290 95" fill="none" stroke="#bcbcbc" stroke-width="1.5" opacity="0.7"/>
-          <!-- Lower arch -->
-          <path d="M30 105 Q160 175 290 105" fill="none" stroke="#bcbcbc" stroke-width="1.5" opacity="0.7"/>
-          <!-- Tooth markers (simplified) upper -->
-          <g fill="#dcdcdc" opacity="0.85">
-            <ellipse cx="60" cy="93" rx="5" ry="11"/>
-            <ellipse cx="80" cy="86" rx="5" ry="11"/>
-            <ellipse cx="100" cy="79" rx="5" ry="11"/>
-            <ellipse cx="120" cy="73" rx="5" ry="11"/>
-            <ellipse cx="140" cy="68" rx="5" ry="11"/>
-            <ellipse cx="160" cy="65" rx="5" ry="11"/>
-            <ellipse cx="180" cy="68" rx="5" ry="11"/>
-            <ellipse cx="200" cy="73" rx="5" ry="11"/>
-            <ellipse cx="220" cy="79" rx="5" ry="11"/>
-            <ellipse cx="240" cy="86" rx="5" ry="11"/>
-            <ellipse cx="260" cy="93" rx="5" ry="11"/>
-          </g>
-          <!-- Tooth markers lower -->
-          <g fill="#dcdcdc" opacity="0.85">
-            <ellipse cx="60" cy="107" rx="5" ry="11"/>
-            <ellipse cx="80" cy="114" rx="5" ry="11"/>
-            <ellipse cx="100" cy="120" rx="5" ry="11"/>
-            <ellipse cx="120" cy="126" rx="5" ry="11"/>
-            <ellipse cx="140" cy="131" rx="5" ry="11"/>
-            <ellipse cx="160" cy="134" rx="5" ry="11"/>
-            <ellipse cx="180" cy="131" rx="5" ry="11"/>
-            <ellipse cx="200" cy="126" rx="5" ry="11"/>
-            <!-- Missing tooth #19 marked with circle -->
-            <circle cx="220" cy="120" r="9" fill="none" stroke="#C86B4A" stroke-width="1.5" stroke-dasharray="3,2"/>
-            <ellipse cx="240" cy="114" rx="5" ry="11"/>
-            <ellipse cx="260" cy="107" rx="5" ry="11"/>
-          </g>
-          <!-- Caries indicator on tooth 14 -->
-          <circle cx="180" cy="68" r="9" fill="none" stroke="#C86B4A" stroke-width="1.5" stroke-dasharray="3,2"/>
-          <text x="190" y="50" font-size="9" fill="#FFB59C" font-family="JetBrains Mono">caries</text>
-          <text x="230" y="100" font-size="9" fill="#FFB59C" font-family="JetBrains Mono">missing #19</text>
-          <text x="10" y="170" font-size="8" fill="#888" font-family="JetBrains Mono">SAMPLE — synthetic case for demonstration</text>
-        </svg>
-      </div>
-      <!-- Analysis panel -->
-      <div class="md:col-span-7 p-6 md:p-8">
-        <div class="flex items-center gap-3 mb-4 flex-wrap">
-          <span class="ai-pill px-3 py-1 rounded-full text-xs font-medium uppercase tracking-widest">AI analysis</span>
-          <span class="text-xs text-muted">Case 1 · mid-30s patient</span>
-          <span class="ml-auto text-xs text-muted">≈ 24s to generate</span>
-        </div>
-        <h3 class="text-xl font-medium text-forest mb-4">Single missing molar + early caries</h3>
-
-        <div class="ai-output bg-cream-bright border border-border rounded-xl p-4 mb-5">
-          <div><span class="key">findings</span>: <span class="val">{</span></div>
-          <div class="pl-4"><span class="key">missing_teeth</span>: <span class="val">[19]</span> <span class="comment">// lower-left first molar</span></div>
-          <div class="pl-4"><span class="key">caries</span>: <span class="val">[{ tooth: 14, severity: "early", surface: "occlusal" }]</span></div>
-          <div class="pl-4"><span class="key">restorations</span>: <span class="val">[]</span></div>
-          <div class="pl-4"><span class="key">bone_density</span>: <span class="val">"adequate for implant"</span></div>
-          <div><span class="val">}</span></div>
-          <div class="mt-2"><span class="key">treatment_plan</span>: <span class="val">[</span></div>
-          <div class="pl-4"><span class="val">{ procedure: "implant + crown",</span> <span class="comment">// tooth 19, Straumann recommended</span></div>
-          <div class="pl-6"><span class="val">trips: 2, total_days: 6,</span> <span class="key">priority</span>: <span class="val">"high" }</span>,</div>
-          <div class="pl-4"><span class="val">{ procedure: "composite filling",</span> <span class="comment">// tooth 14</span></div>
-          <div class="pl-6"><span class="val">trips: 1, total_days: 1,</span> <span class="key">priority</span>: <span class="val">"medium" }</span></div>
-          <div><span class="val">]</span></div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 mb-5">
-          <div class="p-3 rounded-lg bg-cream-warm">
-            <p class="text-xs uppercase tracking-widest text-muted mb-1">US ballpark</p>
-            <p class="font-serif text-xl text-forest">~$5,800</p>
-            <p class="text-xs text-muted mt-1">implant + crown + filling</p>
-          </div>
-          <div class="p-3 rounded-lg bg-forest text-cream">
-            <p class="text-xs uppercase tracking-widest text-cream/70 mb-1">Medivoyage ballpark</p>
-            <p class="font-serif text-xl text-terra-light">~$2,000</p>
-            <p class="text-xs text-cream/70 mt-1">~65% lower</p>
-          </div>
-        </div>
-
-        <p class="text-xs text-muted">
-          <span class="material-symbols-outlined text-terracotta text-base align-middle mr-1">verified</span>
-          AI draft — reviewed by a partner dentist before any patient sees it.
-        </p>
-      </div>
+    <!-- CTA -->
+    <div class="bg-forest text-cream rounded-2xl p-8 text-center">
+      <h3 class="font-serif text-2xl mb-2 text-cream">Ready for the real plan?</h3>
+      <p class="text-cream/80 text-sm mb-5">Dr. Rivas reviews your case, requests a panoramic x-ray if needed, and sends a personalized plan with locked-in pricing within 24 hours.</p>
+      <a href="#cta" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-terracotta hover:bg-terra-deep text-cream font-medium transition-all">
+        Get matched to PV Smile
+        <span class="material-symbols-outlined text-base">arrow_forward</span>
+      </a>
     </div>
   </div>
 
-  <!-- CASE 2 -->
-  <div class="bg-white rounded-3xl border border-border shadow-sm overflow-hidden">
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-0">
-      <div class="md:col-span-5 xray-frame">
-        <svg class="xray-svg" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" aria-label="Stylized panoramic x-ray, sample case 2">
-          <defs>
-            <radialGradient id="rg2" cx="50%" cy="50%" r="60%">
-              <stop offset="0%" stop-color="#444"/>
-              <stop offset="100%" stop-color="#0a0a0a"/>
-            </radialGradient>
-          </defs>
-          <rect width="320" height="180" fill="url(#rg2)"/>
-          <path d="M30 95 Q160 30 290 95" fill="none" stroke="#bcbcbc" stroke-width="1.5" opacity="0.7"/>
-          <path d="M30 105 Q160 175 290 105" fill="none" stroke="#bcbcbc" stroke-width="1.5" opacity="0.7"/>
-          <!-- Upper arch with crowns marked -->
-          <g fill="#dcdcdc" opacity="0.85">
-            <ellipse cx="60" cy="93" rx="5" ry="11"/>
-            <ellipse cx="80" cy="86" rx="5" ry="11"/>
-            <ellipse cx="100" cy="79" rx="5" ry="11"/>
-            <ellipse cx="120" cy="73" rx="5" ry="11"/>
-            <ellipse cx="140" cy="68" rx="5" ry="11"/>
-            <ellipse cx="160" cy="65" rx="5" ry="11"/>
-            <ellipse cx="180" cy="68" rx="5" ry="11"/>
-            <ellipse cx="200" cy="73" rx="5" ry="11"/>
-            <ellipse cx="220" cy="79" rx="5" ry="11"/>
-            <ellipse cx="240" cy="86" rx="5" ry="11"/>
-            <ellipse cx="260" cy="93" rx="5" ry="11"/>
-          </g>
-          <g fill="#dcdcdc" opacity="0.85">
-            <ellipse cx="60" cy="107" rx="5" ry="11"/>
-            <ellipse cx="80" cy="114" rx="5" ry="11"/>
-            <ellipse cx="100" cy="120" rx="5" ry="11"/>
-            <ellipse cx="120" cy="126" rx="5" ry="11"/>
-            <ellipse cx="140" cy="131" rx="5" ry="11"/>
-            <ellipse cx="160" cy="134" rx="5" ry="11"/>
-            <ellipse cx="180" cy="131" rx="5" ry="11"/>
-            <ellipse cx="200" cy="126" rx="5" ry="11"/>
-            <ellipse cx="220" cy="120" rx="5" ry="11"/>
-            <ellipse cx="240" cy="114" rx="5" ry="11"/>
-            <ellipse cx="260" cy="107" rx="5" ry="11"/>
-          </g>
-          <!-- Multiple caries markers -->
-          <circle cx="100" cy="79" r="9" fill="none" stroke="#C86B4A" stroke-width="1.5" stroke-dasharray="3,2"/>
-          <circle cx="220" cy="79" r="9" fill="none" stroke="#C86B4A" stroke-width="1.5" stroke-dasharray="3,2"/>
-          <circle cx="80" cy="114" r="9" fill="none" stroke="#C86B4A" stroke-width="1.5" stroke-dasharray="3,2"/>
-          <circle cx="240" cy="114" r="9" fill="none" stroke="#C86B4A" stroke-width="1.5" stroke-dasharray="3,2"/>
-          <!-- Worn crown indicator -->
-          <rect x="155" y="58" width="10" height="14" fill="none" stroke="#FFB59C" stroke-width="1.5" stroke-dasharray="2,2"/>
-          <text x="105" y="56" font-size="9" fill="#FFB59C" font-family="JetBrains Mono">4 caries</text>
-          <text x="166" y="50" font-size="9" fill="#FFB59C" font-family="JetBrains Mono">worn crown</text>
-          <text x="10" y="170" font-size="8" fill="#888" font-family="JetBrains Mono">SAMPLE — synthetic case for demonstration</text>
-        </svg>
-      </div>
-      <div class="md:col-span-7 p-6 md:p-8">
-        <div class="flex items-center gap-3 mb-4 flex-wrap">
-          <span class="ai-pill px-3 py-1 rounded-full text-xs font-medium uppercase tracking-widest">AI analysis</span>
-          <span class="text-xs text-muted">Case 2 · late-50s patient</span>
-          <span class="ml-auto text-xs text-muted">≈ 28s to generate</span>
-        </div>
-        <h3 class="text-xl font-medium text-forest mb-4">Multiple cavities + worn crown replacement</h3>
-
-        <div class="ai-output bg-cream-bright border border-border rounded-xl p-4 mb-5">
-          <div><span class="key">findings</span>: <span class="val">{</span></div>
-          <div class="pl-4"><span class="key">caries</span>: <span class="val">[</span></div>
-          <div class="pl-6"><span class="val">{ tooth: 3,  severity: "moderate", surface: "occlusal-mesial" }</span>,</div>
-          <div class="pl-6"><span class="val">{ tooth: 14, severity: "moderate", surface: "occlusal" }</span>,</div>
-          <div class="pl-6"><span class="val">{ tooth: 21, severity: "early",    surface: "buccal" }</span>,</div>
-          <div class="pl-6"><span class="val">{ tooth: 30, severity: "moderate", surface: "occlusal" }</span></div>
-          <div class="pl-4"><span class="val">]</span>,</div>
-          <div class="pl-4"><span class="key">existing_restorations</span>: <span class="val">[{ tooth: 9, type: "PFM crown", status: "worn" }]</span></div>
-          <div><span class="val">}</span></div>
-          <div class="mt-2"><span class="key">treatment_plan</span>: <span class="val">[</span></div>
-          <div class="pl-4"><span class="val">{ procedure: "composite fillings (×4)",</span> <span class="key">priority</span>: <span class="val">"medium" }</span>,</div>
-          <div class="pl-4"><span class="val">{ procedure: "zirconia crown replacement",</span> <span class="comment">// tooth 9</span></div>
-          <div class="pl-6"><span class="val">trips: 2, total_days: 5,</span> <span class="key">priority</span>: <span class="val">"high" }</span></div>
-          <div><span class="val">]</span></div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 mb-5">
-          <div class="p-3 rounded-lg bg-cream-warm">
-            <p class="text-xs uppercase tracking-widest text-muted mb-1">US ballpark</p>
-            <p class="font-serif text-xl text-forest">~$3,000</p>
-            <p class="text-xs text-muted mt-1">4 fillings + 1 crown</p>
-          </div>
-          <div class="p-3 rounded-lg bg-forest text-cream">
-            <p class="text-xs uppercase tracking-widest text-cream/70 mb-1">Medivoyage ballpark</p>
-            <p class="font-serif text-xl text-terra-light">~$1,000</p>
-            <p class="text-xs text-cream/70 mt-1">~65% lower</p>
-          </div>
-        </div>
-
-        <p class="text-xs text-muted">
-          <span class="material-symbols-outlined text-terracotta text-base align-middle mr-1">verified</span>
-          AI draft — reviewed by a partner dentist before any patient sees it.
-        </p>
-      </div>
+  <!-- RESULT — OUT OF SCOPE -->
+  <div id="result-oos" class="hidden bg-white border border-terracotta/30 rounded-2xl p-6 md:p-8 mb-6 shadow-sm">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="material-symbols-outlined text-terracotta">priority_high</span>
+      <p class="text-xs uppercase tracking-widest text-terracotta font-medium">Outside the v1 prototype scope</p>
     </div>
+    <h3 class="font-serif text-2xl text-forest mb-3 font-medium">Your case needs a partner-dentist review.</h3>
+    <p id="oos-reason" class="text-muted leading-relaxed mb-4"></p>
+    <p id="oos-narrative" class="text-forest leading-relaxed mb-6"></p>
+    <a href="#cta" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-terracotta hover:bg-terra-deep text-cream font-medium transition-all">
+      Have Dr. Rivas review my case
+      <span class="material-symbols-outlined text-base">arrow_forward</span>
+    </a>
   </div>
+
 </section>
 
 <!-- WAITLIST CTA -->
@@ -441,11 +519,328 @@
   <div class="border-t border-forest py-6 px-8 text-center text-xs text-cream/60">© 2026 Medivoyage Health</div>
 </footer>
 
-<!-- Firebase auto-init -->
+<!-- Firebase auto-init for waitlist -->
 <script defer src="/__/firebase/10.12.0/firebase-app-compat.js"></script>
 <script defer src="/__/firebase/10.12.0/firebase-firestore-compat.js"></script>
 <script defer src="/__/firebase/init.js"></script>
+
+<!-- AI demo logic -->
 <script>
+  // ----- CONFIG -----
+  // In production, this points to the deployed worker URL.
+  // In local dev, use the wrangler dev server.
+  // Override at runtime via window.MEDIVOYAGE_WORKER_URL if needed.
+  const WORKER_URL = (window.MEDIVOYAGE_WORKER_URL) ||
+    (location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+      ? 'http://127.0.0.1:8787'
+      : 'https://medivoyage-ai.medivoyage-health.workers.dev');  // Placeholder — update after deploy
+
+  // ----- TAB SWITCHING -----
+  const tabs = {
+    text: { btn: document.getElementById('tab-text'), panel: document.getElementById('mode-text') },
+    form: { btn: document.getElementById('tab-form'), panel: document.getElementById('mode-form') },
+    xray: { btn: document.getElementById('tab-xray'), panel: document.getElementById('mode-xray') }
+  };
+  let currentMode = 'text';
+
+  function setMode(mode) {
+    currentMode = mode;
+    Object.entries(tabs).forEach(([k, t]) => {
+      if (k === mode) {
+        t.btn.classList.add('active'); t.btn.classList.remove('text-muted');
+        t.panel.classList.remove('hidden');
+      } else {
+        t.btn.classList.remove('active'); t.btn.classList.add('text-muted');
+        t.panel.classList.add('hidden');
+      }
+    });
+  }
+  Object.entries(tabs).forEach(([k, t]) => {
+    t.btn.addEventListener('click', () => setMode(k));
+  });
+
+  // ----- X-RAY MODE LOGIC -----
+  const xrayFileInput = document.getElementById('xray-file-input');
+  const useSampleBtn = document.getElementById('use-sample-btn');
+  const xrayPreview = document.getElementById('xray-preview');
+  const xrayPreviewWrap = document.getElementById('xray-preview-wrap');
+  const xrayFilename = document.getElementById('xray-filename');
+  const xrayMeta = document.getElementById('xray-meta');
+  const xraySource = document.getElementById('xray-source');
+  const xrayClearBtn = document.getElementById('xray-clear-btn');
+  const xrayContext = document.getElementById('xray-context');
+
+  let xrayState = null;  // { base64, mediaType, filename, source }
+
+  function showXrayPreview(state) {
+    xrayState = state;
+    xrayPreview.src = 'data:' + state.mediaType + ';base64,' + state.base64;
+    xrayFilename.textContent = state.filename;
+    xrayMeta.textContent = state.mediaType + ' · ' + Math.round(state.base64.length * 0.75 / 1024) + ' KB';
+    xraySource.textContent = state.source || '';
+    xrayPreviewWrap.classList.remove('hidden');
+  }
+
+  function clearXray() {
+    xrayState = null;
+    xrayPreview.src = '';
+    xrayPreviewWrap.classList.add('hidden');
+    xrayFileInput.value = '';
+  }
+  xrayClearBtn.addEventListener('click', clearXray);
+
+  useSampleBtn.addEventListener('click', async () => {
+    useSampleBtn.disabled = true;
+    useSampleBtn.querySelector('span:last-child').textContent = 'Loading sample…';
+    try {
+      const res = await fetch('/demo-assets/sample-panoramic.jpg');
+      const blob = await res.blob();
+      const base64 = await blobToBase64(blob);
+      showXrayPreview({
+        base64,
+        mediaType: 'image/jpeg',
+        filename: 'sample-panoramic.jpg',
+        source: 'CC0 public domain · Wikimedia Commons / MartinThoma'
+      });
+    } catch (e) {
+      console.error(e);
+      alert('Could not load sample x-ray.');
+    } finally {
+      useSampleBtn.disabled = false;
+      useSampleBtn.querySelector('span:last-child').textContent = 'Use our sample x-ray';
+    }
+  });
+
+  xrayFileInput.addEventListener('change', async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image is too large. Maximum 5MB.');
+      xrayFileInput.value = '';
+      return;
+    }
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      alert('Please upload a JPEG, PNG, or WebP image.');
+      xrayFileInput.value = '';
+      return;
+    }
+    const base64 = await blobToBase64(file);
+    showXrayPreview({
+      base64,
+      mediaType: file.type,
+      filename: file.name,
+      source: 'Uploaded by you · stays on the worker for analysis only'
+    });
+  });
+
+  function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result || '';
+        const idx = result.indexOf(',');
+        resolve(idx >= 0 ? result.slice(idx + 1) : result);
+      };
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  // ----- TEXT MODE: char count + examples -----
+  const textInput = document.getElementById('text-input');
+  const charCount = document.getElementById('char-count');
+  textInput.addEventListener('input', () => {
+    charCount.textContent = textInput.value.length + ' / 2000';
+  });
+  document.querySelectorAll('.example-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      textInput.value = btn.dataset.example;
+      textInput.dispatchEvent(new Event('input'));
+    });
+  });
+
+  // ----- BUILD PAYLOAD -----
+  function buildPayload() {
+    if (currentMode === 'text') {
+      const description = textInput.value.trim();
+      if (description.length < 10) return { error: 'Please describe your case (at least 10 characters).' };
+      return { mode: 'text', description };
+    }
+    if (currentMode === 'xray') {
+      if (!xrayState) return { error: 'Please use the sample x-ray or upload your own image.' };
+      const ctx = xrayContext.value.trim();
+      return {
+        mode: 'xray',
+        image_base64: xrayState.base64,
+        image_media_type: xrayState.mediaType,
+        context: ctx || undefined
+      };
+    }
+    const toothRaw = document.getElementById('form-tooth').value;
+    const duration = document.getElementById('form-duration').value;
+    const age = document.getElementById('form-age').value;
+    const health = document.getElementById('form-health').value;
+    if (!toothRaw) return { error: 'Please select which tooth is missing.' };
+    if (!duration) return { error: 'Please select how long it has been missing.' };
+    if (!age || +age < 16 || +age > 100) return { error: 'Please enter your age (16–100).' };
+    const [tooth_position, tooth_number] = toothRaw.split('|');
+    return {
+      mode: 'structured',
+      structured: {
+        tooth_position,
+        tooth_number: parseInt(tooth_number, 10),
+        missing_duration_months: parseInt(duration, 10),
+        age: parseInt(age, 10),
+        general_dental_health: health || undefined,
+        has_pain: document.getElementById('form-pain').checked,
+        smoker: document.getElementById('form-smoker').checked,
+        diabetes: document.getElementById('form-diabetes').checked
+      }
+    };
+  }
+
+  // ----- LOADING ANIMATION -----
+  function startThinkingAnimation() {
+    const steps = document.querySelectorAll('.thinking-step');
+    const isXray = currentMode === 'xray';
+    steps.forEach(s => {
+      s.classList.remove('shown');
+      const label = s.querySelector('span:last-child');
+      if (label) label.textContent = isXray ? s.dataset.xrayStep : s.dataset.textStep;
+    });
+    steps.forEach((s, i) => {
+      setTimeout(() => s.classList.add('shown'), 200 + i * 800);
+    });
+  }
+
+  // ----- RUN -----
+  const runBtn = document.getElementById('run-btn');
+  const runBtnLabel = document.getElementById('run-btn-label');
+  const errorMsg = document.getElementById('error-msg');
+  const loadingEl = document.getElementById('loading');
+  const resultEl = document.getElementById('result');
+  const resultOosEl = document.getElementById('result-oos');
+
+  runBtn.addEventListener('click', async () => {
+    errorMsg.classList.add('hidden');
+    resultEl.classList.add('hidden');
+    resultOosEl.classList.add('hidden');
+
+    const payload = buildPayload();
+    if (payload.error) {
+      errorMsg.textContent = payload.error;
+      errorMsg.classList.remove('hidden');
+      return;
+    }
+
+    runBtn.disabled = true;
+    runBtnLabel.textContent = 'Generating…';
+    loadingEl.classList.remove('hidden');
+    startThinkingAnimation();
+
+    const t0 = performance.now();
+    try {
+      const res = await fetch(WORKER_URL + '/api/intake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || ('HTTP ' + res.status));
+      }
+      const elapsed = Math.round((performance.now() - t0) / 100) / 10;
+      renderResult(data, elapsed);
+    } catch (err) {
+      console.error('AI request failed:', err);
+      errorMsg.textContent = 'Could not reach the AI service: ' + err.message;
+      errorMsg.classList.remove('hidden');
+    } finally {
+      runBtn.disabled = false;
+      runBtnLabel.textContent = 'Generate AI plan';
+      loadingEl.classList.add('hidden');
+    }
+  });
+
+  // ----- RENDER -----
+  function renderResult(data, elapsedSec) {
+    if (data.in_scope === false) {
+      document.getElementById('oos-reason').textContent = data.out_of_scope_reason || '';
+      document.getElementById('oos-narrative').textContent = data.narrative || '';
+      resultOosEl.classList.remove('hidden');
+      resultOosEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
+    // Header
+    document.getElementById('result-time').textContent = '~' + elapsedSec + 's · ' + (data.ai_meta && data.ai_meta.model ? data.ai_meta.model.split('-').slice(0,3).join(' ') : 'Claude');
+    document.getElementById('result-title').textContent = data.findings.missing_teeth_described
+      ? 'Missing tooth: ' + data.findings.missing_teeth_described + (data.findings.tooth_number_guess ? ' (#' + data.findings.tooth_number_guess + ')' : '')
+      : 'Single-tooth implant case';
+    document.getElementById('result-summary').textContent = data.findings.summary || '';
+
+    // Flags
+    const flagsContainer = document.getElementById('result-flags');
+    flagsContainer.innerHTML = '';
+    (data.findings.complications_likely || []).forEach(flag => {
+      const tag = document.createElement('span');
+      tag.className = 'bg-terra-light/40 text-terra-deep border border-terra-light px-3 py-1 rounded-full text-xs';
+      tag.textContent = flag;
+      flagsContainer.appendChild(tag);
+    });
+    if ((data.findings.complications_likely || []).length === 0) {
+      const tag = document.createElement('span');
+      tag.className = 'bg-cream-warm text-forest border border-border px-3 py-1 rounded-full text-xs';
+      tag.textContent = 'No major complications flagged';
+      flagsContainer.appendChild(tag);
+    }
+
+    // Raw JSON
+    document.getElementById('result-json').textContent = JSON.stringify({
+      findings: data.findings,
+      treatment_plan: data.treatment_plan
+    }, null, 2);
+
+    // Narrative + trips
+    document.getElementById('plan-narrative').textContent = data.narrative || '';
+    const tripsEl = document.getElementById('plan-trips');
+    tripsEl.innerHTML = '';
+    (data.costs.trip_plan || []).forEach((trip, i) => {
+      const card = document.createElement('div');
+      card.className = 'p-5 rounded-xl bg-cream-bright border border-border';
+      card.innerHTML = '<p class="text-xs uppercase tracking-widest text-terracotta font-medium mb-1">Visit ' + trip.visit + ' · ' + trip.days + ' days' + (trip.wait_after_visit_1_months ? ' (' + trip.wait_after_visit_1_months + ' months later)' : '') + '</p>' +
+        '<p class="text-sm text-forest leading-relaxed">' + trip.description + '</p>';
+      tripsEl.appendChild(card);
+    });
+
+    // Questions
+    const qList = document.getElementById('plan-questions');
+    qList.innerHTML = '';
+    (data.questions_for_dentist || []).forEach(q => {
+      const li = document.createElement('li');
+      li.textContent = q;
+      qList.appendChild(li);
+    });
+    if ((data.questions_for_dentist || []).length === 0) {
+      const li = document.createElement('li');
+      li.textContent = 'Confirm bone density via panoramic x-ray';
+      qList.appendChild(li);
+    }
+
+    // Costs
+    const c = data.costs;
+    document.getElementById('cost-us').textContent = c.us.range;
+    document.getElementById('cost-us-detail').textContent = 'implant + crown' + (c.bone_graft_included ? ' + bone graft' : '');
+    document.getElementById('cost-mx').textContent = c.mx.range_with_travel;
+    document.getElementById('cost-mx-detail').textContent = c.mx.clinic + ' (' + c.mx.range_clinic_only + ' clinic-only) + ~$' + c.travel.amount + ' travel';
+    document.getElementById('cost-savings').textContent = c.savings.formatted;
+    document.getElementById('cost-disclaimer').textContent = c.disclaimer;
+
+    resultEl.classList.remove('hidden');
+    resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ----- WAITLIST -----
   function submitWaitlist(e, id) {
     e.preventDefault();
     var form = e.target;
@@ -470,6 +865,7 @@
       });
     } else { console.warn('Firebase not available — lead not persisted:', payload); showSuccess(); }
   }
+  window.submitWaitlist = submitWaitlist;
 </script>
 </body>
 </html>

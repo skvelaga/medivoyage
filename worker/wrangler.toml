@@ -1,0 +1,15 @@
+name = "medivoyage-ai"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+# Routes — fill in once Cloudflare account is set up.
+# Production deployment will use medivoyage-ai.<your-subdomain>.workers.dev
+# Or a custom route like api.medivoyage.health/* once DNS is added to Cloudflare.
+
+[vars]
+# Public env vars (non-secret) go here.
+ALLOWED_ORIGINS = "https://medivoyage.health,https://medivoyage-1ff3b.web.app,https://medivoyage-1ff3b.firebaseapp.com,http://localhost:5000,http://127.0.0.1:5000,http://localhost:8787"
+
+# Secrets are set via:
+#   wrangler secret put ANTHROPIC_API_KEY
+# For local dev, .dev.vars is loaded automatically by wrangler dev.
