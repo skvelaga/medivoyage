@@ -8,7 +8,7 @@ compatibility_date = "2026-01-01"
 
 [vars]
 # Public env vars (non-secret) go here.
-ALLOWED_ORIGINS = "https://medivoyage.health,https://medivoyage-1ff3b.web.app,https://medivoyage-1ff3b.firebaseapp.com,http://localhost:5000,http://127.0.0.1:5000,http://localhost:8787"
+ALLOWED_ORIGINS = "https://medivoyage.health,https://www.medivoyage.health,https://medivoyage-1ff3b.web.app,https://medivoyage-1ff3b.firebaseapp.com,http://localhost:5000,http://127.0.0.1:5000,http://localhost:8787"
 
 # Secrets are set via:
 #   wrangler secret put ANTHROPIC_API_KEY
