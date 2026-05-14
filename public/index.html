@@ -120,9 +120,11 @@
           <input name="email" type="email" required placeholder="you@example.com"
             class="px-4 py-3 rounded-lg bg-white text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light"/>
           <input name="phone" type="tel"   required placeholder="Phone (US)" inputmode="tel"
-            class="px-4 py-3 rounded-lg bg-white text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light md:col-span-1"/>
+            class="px-4 py-3 rounded-lg bg-white text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light md:col-span-2"/>
+          <textarea name="description" rows="3" placeholder="Briefly tell us what you need — missing tooth, broken crown, pain, cleaning, etc. (optional, but speeds up your plan)"
+            class="px-4 py-3 rounded-lg bg-white text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light md:col-span-2 resize-y text-sm"></textarea>
           <button type="submit"
-            class="px-6 py-3 rounded-lg bg-terracotta text-cream font-medium hover:bg-terra-deep transition-all md:col-span-1 flex items-center justify-center gap-2">
+            class="px-6 py-3 rounded-lg bg-terracotta text-cream font-medium hover:bg-terra-deep transition-all md:col-span-2 flex items-center justify-center gap-2">
             Get my treatment plan
             <span class="material-symbols-outlined text-base">arrow_forward</span>
           </button>
@@ -406,9 +408,11 @@
       <input name="email" type="email" required placeholder="you@example.com"
         class="px-4 py-3 rounded-lg bg-cream text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light"/>
       <input name="phone" type="tel"   required placeholder="Phone (US)" inputmode="tel"
-        class="px-4 py-3 rounded-lg bg-cream text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light"/>
+        class="px-4 py-3 rounded-lg bg-cream text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light md:col-span-2"/>
+      <textarea name="description" rows="3" placeholder="Briefly tell us what you need — missing tooth, broken crown, pain, cleaning, etc. (optional, but speeds up your plan)"
+        class="px-4 py-3 rounded-lg bg-cream text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light md:col-span-2 resize-y text-sm"></textarea>
       <button type="submit"
-        class="px-6 py-3 rounded-lg bg-terracotta text-cream font-medium hover:bg-terra-deep transition-all flex items-center justify-center gap-2">
+        class="px-6 py-3 rounded-lg bg-terracotta text-cream font-medium hover:bg-terra-deep transition-all md:col-span-2 flex items-center justify-center gap-2">
         Join the waitlist
         <span class="material-symbols-outlined text-base">arrow_forward</span>
       </button>
@@ -476,7 +480,8 @@
     var name  = (form.querySelector('input[name=name]')  || {}).value || '';
     var email = (form.querySelector('input[name=email]') || {}).value || '';
     var phone = (form.querySelector('input[name=phone]') || {}).value || '';
-    name = name.trim(); email = email.trim(); phone = phone.trim();
+    var description = (form.querySelector('textarea[name=description]') || {}).value || '';
+    name = name.trim(); email = email.trim(); phone = phone.trim(); description = description.trim();
     if (!name || !email || !phone) return;
 
     if (btn) { btn.disabled = true; btn.innerHTML = 'Joining…'; }
@@ -491,6 +496,7 @@
       name: name,
       email: email,
       phone: phone,
+      description: description,
       source: id,
       page: location.pathname,
       referrer: document.referrer || '',

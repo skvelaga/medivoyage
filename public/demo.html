@@ -563,10 +563,15 @@
             class="w-full px-4 py-3 rounded-lg bg-cream-bright border border-border text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light"/>
         </div>
       </div>
-      <div class="mb-5">
+      <div class="mb-4">
         <label class="block text-xs uppercase tracking-widest text-muted font-medium mb-2">Phone (US)</label>
         <input name="phone" type="tel" required inputmode="tel" placeholder="(555) 555-5555"
           class="w-full px-4 py-3 rounded-lg bg-cream-bright border border-border text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light"/>
+      </div>
+      <div class="mb-5">
+        <label class="block text-xs uppercase tracking-widest text-muted font-medium mb-2">Tell us about your case <span class="text-muted/60 normal-case">(optional)</span></label>
+        <textarea name="description" rows="3" placeholder="Briefly describe what you need — missing tooth, broken crown, pain, cleaning, etc. The more we know, the faster we can come back with a plan."
+          class="w-full px-4 py-3 rounded-lg bg-cream-bright border border-border text-forest placeholder:text-muted/60 outline-none focus:ring-2 focus:ring-terra-light resize-y text-sm"></textarea>
       </div>
       <button type="submit"
         class="w-full px-6 py-3 rounded-lg bg-terracotta hover:bg-terra-deep text-cream font-medium transition-all flex items-center justify-center gap-2">
@@ -1051,7 +1056,8 @@
     var name  = (form.querySelector('input[name=name]')  || {}).value || '';
     var email = (form.querySelector('input[name=email]') || {}).value || '';
     var phone = (form.querySelector('input[name=phone]') || {}).value || '';
-    name = name.trim(); email = email.trim(); phone = phone.trim();
+    var description = (form.querySelector('textarea[name=description]') || {}).value || '';
+    name = name.trim(); email = email.trim(); phone = phone.trim(); description = description.trim();
     if (!name || !email || !phone) return;
     if (btn) { btn.disabled = true; btn.innerHTML = 'Sending…'; }
     function showSuccess() {
@@ -1059,7 +1065,7 @@
       var success = document.getElementById('success' + id);
       if (success) success.classList.add('active');
     }
-    var payload = { name:name, email:email, phone:phone, source:id, page:location.pathname,
+    var payload = { name:name, email:email, phone:phone, description:description, source:id, page:location.pathname,
       referrer:document.referrer || '', userAgent:navigator.userAgent || '' };
     if (window.firebase && firebase.firestore) {
       payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
