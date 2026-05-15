@@ -291,15 +291,11 @@
     <div id="mode-xray" class="hidden">
       <label class="block text-xs uppercase tracking-widest text-muted font-medium mb-3">Upload a panoramic dental x-ray</label>
 
-      <!-- Sample x-ray button + upload -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-        <button id="use-sample-btn" type="button" class="px-4 py-3 rounded-lg bg-cream-warm border border-border text-forest text-sm font-medium hover:bg-cream transition-all flex items-center justify-center gap-2">
-          <span class="material-symbols-outlined text-base">imagesearch_roller</span>
-          Use our sample x-ray
-        </button>
+      <!-- Upload x-ray -->
+      <div class="mb-4">
         <label class="px-4 py-3 rounded-lg bg-forest text-cream text-sm font-medium hover:bg-forest-dark transition-all flex items-center justify-center gap-2 cursor-pointer">
           <span class="material-symbols-outlined text-base">upload</span>
-          Upload your own (PNG / JPG)
+          Upload your panoramic x-ray (PNG / JPG)
           <input id="xray-file-input" type="file" accept="image/png,image/jpeg,image/webp" class="hidden"/>
         </label>
       </div>
@@ -666,7 +662,6 @@
 
   // ----- X-RAY MODE LOGIC -----
   const xrayFileInput = document.getElementById('xray-file-input');
-  const useSampleBtn = document.getElementById('use-sample-btn');
   const xrayPreview = document.getElementById('xray-preview');
   const xrayPreviewWrap = document.getElementById('xray-preview-wrap');
   const xrayFilename = document.getElementById('xray-filename');
@@ -693,28 +688,6 @@
     xrayFileInput.value = '';
   }
   xrayClearBtn.addEventListener('click', clearXray);
-
-  useSampleBtn.addEventListener('click', async () => {
-    useSampleBtn.disabled = true;
-    useSampleBtn.querySelector('span:last-child').textContent = 'Loading sample…';
-    try {
-      const res = await fetch('/demo-assets/sample-panoramic.jpg');
-      const blob = await res.blob();
-      const base64 = await blobToBase64(blob);
-      showXrayPreview({
-        base64,
-        mediaType: 'image/jpeg',
-        filename: 'sample-panoramic.jpg',
-        source: 'CC0 public domain · Wikimedia Commons / MartinThoma'
-      });
-    } catch (e) {
-      console.error(e);
-      alert('Could not load sample x-ray.');
-    } finally {
-      useSampleBtn.disabled = false;
-      useSampleBtn.querySelector('span:last-child').textContent = 'Use our sample x-ray';
-    }
-  });
 
   xrayFileInput.addEventListener('change', async (e) => {
     const file = e.target.files && e.target.files[0];
@@ -772,7 +745,7 @@
       return { mode: 'text', description };
     }
     if (currentMode === 'xray') {
-      if (!xrayState) return { error: 'Please use the sample x-ray or upload your own image.' };
+      if (!xrayState) return { error: 'Please upload a panoramic x-ray image.' };
       const ctx = xrayContext.value.trim();
       return {
         mode: 'xray',
