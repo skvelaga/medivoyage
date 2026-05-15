@@ -291,11 +291,15 @@
     <div id="mode-xray" class="hidden">
       <label class="block text-xs uppercase tracking-widest text-muted font-medium mb-3">Upload a panoramic dental x-ray</label>
 
-      <!-- Upload x-ray -->
-      <div class="mb-4">
-        <label class="px-4 py-3 rounded-lg bg-forest text-cream text-sm font-medium hover:bg-forest-dark transition-all flex items-center justify-center gap-2 cursor-pointer">
-          <span class="material-symbols-outlined text-base">upload</span>
-          Upload your panoramic x-ray (PNG / JPG)
+      <!-- Sample x-ray button + upload -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+        <button id="use-sample-btn" type="button" class="px-4 py-3 rounded-lg bg-cream-warm border border-border text-forest text-sm font-medium hover:bg-cream transition-all flex items-center justify-center gap-2 normal-case tracking-normal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+          <span>Use our sample x-ray</span>
+        </button>
+        <label class="px-4 py-3 rounded-lg bg-forest text-cream text-sm font-medium hover:bg-forest-dark transition-all flex items-center justify-center gap-2 cursor-pointer normal-case tracking-normal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Upload your own (PNG / JPG)</span>
           <input id="xray-file-input" type="file" accept="image/png,image/jpeg,image/webp" class="hidden"/>
         </label>
       </div>
@@ -662,6 +666,7 @@
 
   // ----- X-RAY MODE LOGIC -----
   const xrayFileInput = document.getElementById('xray-file-input');
+  const useSampleBtn = document.getElementById('use-sample-btn');
   const xrayPreview = document.getElementById('xray-preview');
   const xrayPreviewWrap = document.getElementById('xray-preview-wrap');
   const xrayFilename = document.getElementById('xray-filename');
@@ -688,6 +693,29 @@
     xrayFileInput.value = '';
   }
   xrayClearBtn.addEventListener('click', clearXray);
+
+  useSampleBtn.addEventListener('click', async () => {
+    const labelSpan = useSampleBtn.querySelector('span');
+    useSampleBtn.disabled = true;
+    labelSpan.textContent = 'Loading sample…';
+    try {
+      const res = await fetch('/demo-assets/sample-panoramic.jpg');
+      const blob = await res.blob();
+      const base64 = await blobToBase64(blob);
+      showXrayPreview({
+        base64,
+        mediaType: 'image/jpeg',
+        filename: 'sample-panoramic.jpg',
+        source: 'CC0 public domain · Wikimedia Commons / MartinThoma'
+      });
+    } catch (e) {
+      console.error(e);
+      alert('Could not load sample x-ray.');
+    } finally {
+      useSampleBtn.disabled = false;
+      labelSpan.textContent = 'Use our sample x-ray';
+    }
+  });
 
   xrayFileInput.addEventListener('change', async (e) => {
     const file = e.target.files && e.target.files[0];
@@ -745,7 +773,7 @@
       return { mode: 'text', description };
     }
     if (currentMode === 'xray') {
-      if (!xrayState) return { error: 'Please upload a panoramic x-ray image.' };
+      if (!xrayState) return { error: 'Please use the sample x-ray or upload your own image.' };
       const ctx = xrayContext.value.trim();
       return {
         mode: 'xray',
